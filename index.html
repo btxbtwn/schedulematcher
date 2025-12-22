@@ -1,0 +1,1525 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Visit Validation Matcher&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>:root {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-primary: #208c8d;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-primary-hover: #1d7474;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-primary-active: #1a6473;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-background: #fcfcf9;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-surface: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-text: #134252;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-text-secondary: #626c71;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-border: #5e5240;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-error: #c0152f;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-success: #208c8d;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-warning: #a84b2f;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--color-focus-ring: rgba(33, 128, 141, 0.4);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>* {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-background);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.5;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.container {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-width: 900px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 0 auto;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>h1 {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 28px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 0 0 8px 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.subtitle {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.card {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-surface);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(94, 82, 64, 0.2);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.upload-section {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: 1fr 1fr;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.upload-box {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 2px dashed rgba(94, 82, 64, 0.3);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 200ms ease;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.upload-box:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-color: var(--color-primary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(33, 128, 141, 0.02);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.upload-box input {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: none;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.upload-label {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: block;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.upload-hint {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.file-name {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-success);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.button-group {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-wrap: wrap;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>button {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 200ms ease;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: inline-block !important;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>visibility: visible !important;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-primary {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-primary) !important;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: white !important;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-primary:hover:not(:disabled) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-primary-hover) !important;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-primary:active:not(:disabled) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-primary-active) !important;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-primary:disabled {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0.5 !important;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: not-allowed;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-secondary {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid var(--color-border);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-secondary:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.05);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-danger {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-error) !important;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: white !important;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-danger:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0.9;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tabs {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: 1px solid rgba(94, 82, 64, 0.2);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tab-btn {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: 2px solid transparent;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 200ms ease;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tab-btn.active {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-primary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-bottom-color: var(--color-primary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tab-content {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: none;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tab-content.active {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: block;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.config-section {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: 1px solid rgba(94, 82, 64, 0.15);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.config-section:last-child {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding-bottom: 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.section-title {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.section-description {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.form-grid {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: 1.2fr 1.2fr auto;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.form-grid-header {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>letter-spacing: 0.04em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>input[type="text"], input[type="number"], select {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(94, 82, 64, 0.35);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 150ms ease;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>input[type="text"]:focus, input[type="number"]:focus, select:focus {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-color: var(--color-primary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 0 0 2px var(--color-focus-ring);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.pill {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: inline-flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 4px 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 999px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(32, 140, 141, 0.08);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-primary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 11px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.pill-dot {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-primary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.status-row {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.status-label {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.status-value {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.status-value.ok {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-success);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.status-value.warn {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-warning);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.status-value.error {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-error);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.table-container {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(94, 82, 64, 0.25);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>table {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-collapse: collapse;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>th, td {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: 1px solid rgba(94, 82, 64, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: left;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>th {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.05);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 11px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>letter-spacing: 0.03em;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>tr:nth-child(even) td {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.02);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tag {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: inline-flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 2px 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 999px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 11px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(94, 82, 64, 0.4);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tag.primary {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-color: rgba(32, 140, 141, 0.4);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-primary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(32, 140, 141, 0.06);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tag.error {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-color: rgba(192, 21, 47, 0.4);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-error);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(192, 21, 47, 0.04);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.floating-hint {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.badge {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: inline-flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 4px 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 11px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 999px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.05);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.badge-dot {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.7);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.save-row {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-wrap: wrap;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.save-row-text {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.pill-muted {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.06);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.pill-success {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(32, 140, 141, 0.08);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-success);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.pill-warning {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(168, 75, 47, 0.08);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-warning);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.small-input {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-width: 160px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.checkbox-row {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.checkbox-row input[type="checkbox"] {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.site-study-grid {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: repeat(2, minmax(0, 1fr));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.site-study-card {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(94, 82, 64, 0.25);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px 14px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.site-study-header {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.site-study-title {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.muted {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.sites-summary {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.sites-summary-item {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.sites-summary-dot {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.5);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.sites-summary-dot.primary {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-primary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.sites-summary-dot.error {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-error);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.empty-state {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px 16px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 13px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.empty-state-title {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.empty-state-desc {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.pill-mini {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 2px 6px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-ghost-small {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px dashed rgba(94, 82, 64, 0.35);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 11px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 4px 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 999px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-ghost-small:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.04);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.json-config {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>min-height: 120px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid rgba(94, 82, 64, 0.35);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #fffdf8;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>resize: vertical;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.json-config:focus {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-color: var(--color-primary);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 0 0 2px var(--color-focus-ring);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hint-list {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin: 6px 0 0 0;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding-left: 18px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 11px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hint-list li {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stats-row {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-wrap: wrap;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stats-chip {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: inline-flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gap: 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 4px 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 999px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.04);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--color-text-secondary);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stats-dot {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 999px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(94, 82, 64, 0.5);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stats-dot.good {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-success);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stats-dot.bad {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--color-error);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>#matcherTab button {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: inline-block !important;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>visibility: visible !important;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 720px) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.upload-section {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>grid-template-columns: 1fr;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>.form-grid {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>grid-template-columns: 1.2fr 1.2fr;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>.form-grid &gt; button {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>grid-column: span 2;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>justify-self: flex-start;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>.site-study-grid {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>grid-template-columns: 1fr;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1">&lt;div class="container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Visit Validation Matcher&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="subtitle"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Upload your call log and data validation export to match and extract appointment data.</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="upload-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;label class="upload-box" id="callLogDropZone"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="upload-label"&gt;Call Log (Excel)&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="upload-hint"&gt;Click to upload or drag &amp; drop&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="file" id="callLogInput" accept=".xlsx,.xls,.csv"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="file-name" id="callLogFileName"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;label class="upload-box" id="validationDropZone"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="upload-label"&gt;Data Validation Export (Excel)&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="upload-hint"&gt;Click to upload or drag &amp; drop&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="file" id="validationInput" accept=".xlsx,.xls,.csv"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="file-name" id="validationFileName"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="button-group"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-primary" id="matchButton" disabled&gt;Match Visits&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-secondary" id="downloadMatchedButton" disabled&gt;Download Matched Rows&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-secondary" id="downloadUnmatchedButton" disabled&gt;Download Unmatched Rows&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-danger" id="resetButton"&gt;Reset&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="tabs"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="tab-btn active" onclick="switchTab('matcher')"&gt;📊 Matcher&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="tab-btn" onclick="switchTab('config')"&gt;🗂️ Sites &amp; Study&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="matcher" class="tab-content active"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="matcherTab"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="config-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-title"&gt;Matching Summary&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-description" id="matchingSummary"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Matching status will appear here once you upload your files and run the matcher.</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="stats-row" id="statsRow" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="stats-chip"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="stats-dot good"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span id="matchedCountLabel"&gt;0 matched visits&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="stats-chip"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="stats-dot"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span id="unmatchedCallCountLabel"&gt;0 unmatched calls&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="stats-chip"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="stats-dot bad"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span id="unmatchedValidationCountLabel"&gt;0 unmatched validation rows&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="config-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-title"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Matched Appointments</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="pill pill-success" id="matchedBadge" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="pill-dot"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span id="matchedCountPill"&gt;0 rows&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-description"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Rows where a call log record was successfully matched to a data validation appointment.</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="table-container" id="matchedTableContainer" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;table id="matchedTable"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Patient&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Phone&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Site&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Study&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Validation Name&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Appointment Status&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Subject Status&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Cancellation Type&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tbody&gt;&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="empty-state" id="matchedEmptyState"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="empty-state-title"&gt;No matched rows yet&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="empty-state-desc"&gt;Run the matcher to see which calls align with scheduled appointments.&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="config-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-title"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Unmatched Calls</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="pill pill-warning" id="unmatchedBadge" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="pill-dot"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span id="unmatchedCountPill"&gt;0 rows&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-description"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Call log rows that could not be linked to a data validation appointment. Use this list to find potential scheduling gaps.</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="table-container" id="unmatchedTableContainer" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;table id="unmatchedTable"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Patient&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Phone&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Site&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Study&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Issue&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tbody&gt;&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="empty-state" id="unmatchedEmptyState"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="empty-state-title"&gt;No unmatched calls yet&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="empty-state-desc"&gt;After running the matcher, any calls that do not align with appointments will show here.&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="config" class="tab-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="configTab"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="config-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-title"&gt;Study Keywords&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-description"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Add study keywords that will be recognized during matching. For example, if you add "BIPOLAR-101" with keyword "BIPOLAR", then "BIPOLAR Treatment Study" will map to "BIPOLAR-101".</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="form-grid"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="form-grid-header"&gt;Study Name&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="form-grid-header"&gt;Keyword(s)&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="studyKeywordRows"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="btn-ghost-small" id="addStudyKeywordButton"&gt;+ Add study keyword mapping&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="floating-hint"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Use commas to add multiple keywords for the same study (e.g., "BIPOLAR, BP, BIP").</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="config-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-title"&gt;Site Abbreviations&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-description"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Add site abbreviations. For example, "NEW YORK" could map to "NY".</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="form-grid"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="form-grid-header"&gt;Full Name&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="form-grid-header"&gt;Abbreviation&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="siteAbbreviationRows"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="btn-ghost-small" id="addSiteAbbreviationButton"&gt;+ Add site abbreviation&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="floating-hint"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Site abbreviations help normalize naming differences between call logs and validation exports.</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="config-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-title"&gt;Configuration Export&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-description"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Save your mappings and share them with team members or use on another device.</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;textarea id="configJson" class="json-config" readonly&gt;&lt;/textarea&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="hint-list"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;Click "Export configuration" to copy or download your current settings.&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li&gt;Use "Import configuration" to restore settings from a previous JSON export.&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="save-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="save-row-text"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="badge"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span class="badge-dot"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>Configuration lives only in this browser unless you export it.</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div style="display: flex; gap: 8px; flex-wrap: wrap;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button class="btn-secondary" id="importConfigButton"&gt;Import configuration&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button class="btn-primary" id="exportConfigButton"&gt;Export configuration&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="config-section"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-title"&gt;Detected Sites &amp; Studies&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="section-description"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Sites and studies are automatically discovered when you run matching. You can add or delete sites below to keep your configuration up to date as your studies evolve.</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="site-study-grid"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="site-study-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="site-study-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div class="site-study-title"&gt;Sites&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span class="tag primary" id="sitesCountTag"&gt;0 detected&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="muted"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>Manage sites that have been detected from your files.</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="sites-summary" id="sitesSummary" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div class="sites-summary-item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;span class="sites-summary-dot primary"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;span id="sitesActiveCount"&gt;0 in use&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div class="sites-summary-item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;span class="sites-summary-dot error"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;span id="sitesMissingCount"&gt;0 missing&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="table-container" style="margin-top: 10px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;table id="sitesTable"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;th&gt;Site Name&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;th&gt;Abbreviation&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;th&gt;&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;tbody&gt;&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button class="btn-ghost-small" id="addSiteButton" style="margin-top: 8px;"&gt;+ Add site&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="site-study-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="site-study-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div class="site-study-title"&gt;Studies&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span class="tag primary" id="studiesCountTag"&gt;0 detected&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="muted"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>Manage studies that have been detected from your files.</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="sites-summary" id="studiesSummary" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div class="sites-summary-item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;span class="sites-summary-dot primary"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;span id="studiesActiveCount"&gt;0 in use&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div class="sites-summary-item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;span class="sites-summary-dot error"&gt;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;span id="studiesMissingCount"&gt;0 missing&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="table-container" style="margin-top: 10px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;table id="studiesTable"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;th&gt;Study Name&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;th&gt;Keyword(s)&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>&lt;th&gt;&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;tbody&gt;&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button class="btn-ghost-small" id="addStudyButton" style="margin-top: 8px;"&gt;+ Add study&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="floating-hint"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>Add or remove sites manually as needed. Add or remove studies manually as needed.</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let callLogData = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let validationData = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let matchedRows = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let unmatchedCallRows = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let unmatchedValidationRows = [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>let studyKeywords = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let siteAbbreviations = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let detectedSites = new Set();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let detectedStudies = new Set();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>let detectedSitesList = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let detectedStudiesList = [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function switchTab(tabName) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.querySelectorAll('.tab-btn').forEach(btn =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>btn.classList.remove('active');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.querySelectorAll('.tab-content').forEach(tab =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tab.classList.remove('active');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const btns = document.querySelectorAll('.tab-btn');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btns.forEach(btn =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (btn.textContent.includes('Matcher') &amp;&amp; tabName === 'matcher') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if (btn.textContent.includes('Sites') &amp;&amp; tabName === 'config') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById(tabName).classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function handleFileInput(input, labelElement, setDataCallback) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const file = input.files[0];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (!file) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>labelElement.textContent = file.name;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const reader = new FileReader();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>reader.onload = function(e) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const data = e.target.result;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const workbook = XLSX.read(data, { type: 'binary' });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const sheetName = workbook.SheetNames[0];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const sheet = workbook.Sheets[sheetName];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>setDataCallback(jsonData);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>updateMatchButtonState();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>reader.readAsBinaryString(file);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateMatchButtonState() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const matchButton = document.getElementById('matchButton');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>matchButton.disabled = !(callLogData.length &gt; 0 &amp;&amp; validationData.length &gt; 0);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function resetApp() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>callLogData = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>validationData = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>matchedRows = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>unmatchedCallRows = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>unmatchedValidationRows = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedSites = new Set();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedStudies = new Set();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedSitesList = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedStudiesList = [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('callLogInput').value = "";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('validationInput').value = "";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('callLogFileName').textContent = "";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('validationFileName').textContent = "";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchButton').disabled = true;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('downloadMatchedButton').disabled = true;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('downloadUnmatchedButton').disabled = true;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchingSummary').textContent =</p>
+<p class="p1"><span class="Apple-converted-space">            </span>'Matching status will appear here once you upload your files and run the matcher.';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('statsRow').style.display = 'none';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchedTableContainer').style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('unmatchedTableContainer').style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchedEmptyState').style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('unmatchedEmptyState').style.display = 'block';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.querySelector('#matchedTable tbody').innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.querySelector('#unmatchedTable tbody').innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchedBadge').style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('unmatchedBadge').style.display = 'none';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>studyKeywords = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>siteAbbreviations = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderStudyKeywordRows();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderSiteAbbreviationRows();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateConfigJson();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateDetectedSitesStudiesUI();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>alert('All data has been reset.');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function normalizePhone(phone) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (!phone) return '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const digits = String(phone).replace(/\\D/g, '');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (digits.length === 10) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (digits.length === 11 &amp;&amp; digits.startsWith('1')) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return digits.slice(1, 4) + '-' + digits.slice(4, 7) + '-' + digits.slice(7);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return digits;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function normalizeString(str) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return String(str || '').trim().toUpperCase();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function applySiteAbbreviation(site) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const normalized = normalizeString(site);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>for (const mapping of siteAbbreviations) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (normalizeString(mapping.fullName) === normalized) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return mapping.abbreviation;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return site;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function findStudyByKeywords(studyName) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const name = normalizeString(studyName);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>for (const mapping of studyKeywords) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const keywords = (mapping.keywords || '').split(',')</p>
+<p class="p1"><span class="Apple-converted-space">                </span>.map(k =&gt; normalizeString(k))</p>
+<p class="p1"><span class="Apple-converted-space">                </span>.filter(k =&gt; k.length &gt; 0);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (const kw of keywords) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (kw &amp;&amp; name.includes(kw)) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>return mapping.studyName;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return studyName;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function detectSitesAndStudies() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedSites = new Set();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedStudies = new Set();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>callLogData.forEach(row =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (row.Site) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>detectedSites.add(normalizeString(row.Site));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (row.Study) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>detectedStudies.add(normalizeString(row.Study));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>validationData.forEach(row =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (row.Site) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>detectedSites.add(normalizeString(row.Site));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (row.Study) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>detectedStudies.add(normalizeString(row.Study));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if (row['Study Name']) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>detectedStudies.add(normalizeString(row['Study Name']));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedSitesList = Array.from(detectedSites).sort();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedStudiesList = Array.from(detectedStudies).sort();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateSitesStudiesTables();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateDetectedSitesStudiesUI();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateSitesStudiesTables() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const sitesTableBody = document.querySelector('#sitesTable tbody');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const studiesTableBody = document.querySelector('#studiesTable tbody');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>sitesTableBody.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>studiesTableBody.innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const allSites = new Map();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedSitesList.forEach(site =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const siteAbbr = siteAbbreviations.find(</p>
+<p class="p1"><span class="Apple-converted-space">                </span>s =&gt; normalizeString(s.fullName) === normalizeString(site)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>allSites.set(site, siteAbbr ? siteAbbr.abbreviation : '');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>allSites.forEach((abbr, site) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const row = document.createElement('tr');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>row.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;&lt;input type="text" value="${site}" data-original="${site}" class="site-name-input"&gt;&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;&lt;input type="text" value="${abbr}" class="site-abbr-input"&gt;&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td style="text-align: right;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="btn-ghost-small" onclick="removeSiteRow(this)"&gt;Remove&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>sitesTableBody.appendChild(row);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const allStudies = new Map();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedStudiesList.forEach(study =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const mapping = studyKeywords.find(</p>
+<p class="p1"><span class="Apple-converted-space">                </span>s =&gt; normalizeString(s.studyName) === normalizeString(study)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>allStudies.set(study, mapping ? mapping.keywords : '');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>allStudies.forEach((keywords, study) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const row = document.createElement('tr');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>row.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;&lt;input type="text" value="${study}" data-original="${study}" class="study-name-input"&gt;&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;&lt;input type="text" value="${keywords}" class="study-keywords-input"&gt;&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td style="text-align: right;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="btn-ghost-small" onclick="removeStudyRow(this)"&gt;Remove&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>studiesTableBody.appendChild(row);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateDetectedSitesStudiesUI() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const sitesCount = detectedSitesList.length;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const studiesCount = detectedStudiesList.length;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('sitesCountTag').textContent = sitesCount + ' detected';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('studiesCountTag').textContent = studiesCount + ' detected';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const sitesSummary = document.getElementById('sitesSummary');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const studiesSummary = document.getElementById('studiesSummary');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (sitesCount &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>sitesSummary.style.display = 'flex';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('sitesActiveCount').textContent = sitesCount + ' in use';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('sitesMissingCount').textContent = '0 missing';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>sitesSummary.style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (studiesCount &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>studiesSummary.style.display = 'flex';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('studiesActiveCount').textContent = studiesCount + ' in use';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('studiesMissingCount').textContent = '0 missing';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>studiesSummary.style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function matchData() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (callLogData.length === 0 || validationData.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>alert('Please upload both the call log and data validation files.');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>matchedRows = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>unmatchedCallRows = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>unmatchedValidationRows = [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const validationIndex = new Map();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>validationData.forEach(row =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const phone = normalizePhone(row.Phone || row['Phone Number'] || '');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const siteRaw = row.Site || row['Site Name'] || '';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const studyRaw = row.Study || row['Study Name'] || '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const site = applySiteAbbreviation(siteRaw);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const study = findStudyByKeywords(studyRaw);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const key = normalizeString(site) + '|' + normalizeString(study) + '|' + phone;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!validationIndex.has(key)) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>validationIndex.set(key, []);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>validationIndex.get(key).push(row);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const matchedValidationRows = new Set();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>callLogData.forEach(row =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const phone = normalizePhone(row.Phone || row['Phone Number'] || '');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const siteRaw = row.Site || row['Site Name'] || '';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const studyRaw = row.Study || row['Study Name'] || '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const site = applySiteAbbreviation(siteRaw);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const study = findStudyByKeywords(studyRaw);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const key = normalizeString(site) + '|' + normalizeString(study) + '|' + phone;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const matches = validationIndex.get(key) || [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (matches.length &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const validationRow = matches[0];</p>
+<p class="p1"><span class="Apple-converted-space">                </span>matchedRows.push({</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>patient: row.Patient || row['Patient Name'] || '',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>phone: phone,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>site: site || siteRaw,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>study: study || studyRaw,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>validationName: validationRow['Visit Name'] || validationRow['Validation Name'] || '',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>appointmentStatus: validationRow['Appointment Status'] || '',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>subjectStatus: validationRow['Subject Status'] || '',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>cancellationType: validationRow['Cancellation Type'] || ''</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                </span>matchedValidationRows.add(validationRow);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>unmatchedCallRows.push({</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>patient: row.Patient || row['Patient Name'] || '',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>phone: phone,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>site: site || siteRaw,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>study: study || studyRaw,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>issue: 'No matching validation row found'</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>validationData.forEach(row =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!matchedValidationRows.has(row)) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>unmatchedValidationRows.push(row);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderResults();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectSitesAndStudies();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderResults() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const matchedTableBody = document.querySelector('#matchedTable tbody');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const unmatchedTableBody = document.querySelector('#unmatchedTable tbody');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>matchedTableBody.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>unmatchedTableBody.innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>matchedRows.forEach(row =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const tr = document.createElement('tr');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tr.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.patient}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.phone}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.site}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.study}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.validationName}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.appointmentStatus}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.subjectStatus}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.cancellationType}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>matchedTableBody.appendChild(tr);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>unmatchedCallRows.forEach(row =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const tr = document.createElement('tr');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tr.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.patient}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.phone}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.site}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.study}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${row.issue}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>unmatchedTableBody.appendChild(tr);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const matchedCount = matchedRows.length;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const unmatchedCallCount = unmatchedCallRows.length;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const unmatchedValidationCount = unmatchedValidationRows.length;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const totalCalls = callLogData.length;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const matchRate = totalCalls &gt; 0 ? Math.round((matchedCount / totalCalls) * 100) : 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchingSummary').textContent =</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`Matched ${matchedCount} of ${totalCalls} call log rows (${matchRate}% match rate). ` +</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`${unmatchedCallCount} calls and ${unmatchedValidationCount} validation rows remain unmatched.`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('statsRow').style.display = 'flex';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchedCountLabel').textContent = `${matchedCount} matched visits`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('unmatchedCallCountLabel').textContent = `${unmatchedCallCount} unmatched calls`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('unmatchedValidationCountLabel').textContent =</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`${unmatchedValidationCount} unmatched validation rows`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchedTableContainer').style.display = matchedCount &gt; 0 ? 'block' : 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('unmatchedTableContainer').style.display = unmatchedCallCount &gt; 0 ? 'block' : 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchedEmptyState').style.display = matchedCount === 0 ? 'block' : 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('unmatchedEmptyState').style.display = unmatchedCallCount === 0 ? 'block' : 'none';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchedBadge').style.display = matchedCount &gt; 0 ? 'inline-flex' : 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('unmatchedBadge').style.display = unmatchedCallCount &gt; 0 ? 'inline-flex' : 'none';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('matchedCountPill').textContent = `${matchedCount} rows`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('unmatchedCountPill').textContent = `${unmatchedCallCount} rows`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('downloadMatchedButton').disabled = matchedCount === 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('downloadUnmatchedButton').disabled = unmatchedCallCount === 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function downloadExcelFromRows(rows, filename) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (rows.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>alert('No data to download.');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const worksheet = XLSX.utils.json_to_sheet(rows);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const workbook = XLSX.utils.book_new();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>XLSX.writeFile(workbook, filename);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderStudyKeywordRows() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const container = document.getElementById('studyKeywordRows');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>container.innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>studyKeywords.forEach((mapping, index) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const row = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>row.className = 'form-grid';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>row.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" placeholder="e.g., BIPOLAR-101" value="${mapping.studyName || ''}"</p>
+<p class="p1"><span class="Apple-converted-space">                       </span>oninput="updateStudyKeyword(${index}, 'studyName', this.value)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" placeholder="e.g., BIPOLAR, BP" value="${mapping.keywords || ''}"</p>
+<p class="p1"><span class="Apple-converted-space">                       </span>oninput="updateStudyKeyword(${index}, 'keywords', this.value)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="btn-ghost-small" onclick="removeStudyKeyword(${index})"&gt;Remove&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.appendChild(row);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderSiteAbbreviationRows() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const container = document.getElementById('siteAbbreviationRows');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>container.innerHTML = '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>siteAbbreviations.forEach((mapping, index) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const row = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>row.className = 'form-grid';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>row.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" placeholder="e.g., NEW YORK" value="${mapping.fullName || ''}"</p>
+<p class="p1"><span class="Apple-converted-space">                       </span>oninput="updateSiteAbbreviation(${index}, 'fullName', this.value)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" placeholder="e.g., NY" value="${mapping.abbreviation || ''}"</p>
+<p class="p1"><span class="Apple-converted-space">                       </span>oninput="updateSiteAbbreviation(${index}, 'abbreviation', this.value)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="btn-ghost-small" onclick="removeSiteAbbreviation(${index})"&gt;Remove&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.appendChild(row);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function addStudyKeyword() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>studyKeywords.push({ studyName: '', keywords: '' });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderStudyKeywordRows();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateConfigJson();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateStudyKeyword(index, field, value) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>studyKeywords[index][field] = value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateConfigJson();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function removeStudyKeyword(index) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>studyKeywords.splice(index, 1);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderStudyKeywordRows();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateConfigJson();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function addSiteAbbreviation() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>siteAbbreviations.push({ fullName: '', abbreviation: '' });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderSiteAbbreviationRows();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateConfigJson();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateSiteAbbreviation(index, field, value) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>siteAbbreviations[index][field] = value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateConfigJson();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function removeSiteAbbreviation(index) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>siteAbbreviations.splice(index, 1);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderSiteAbbreviationRows();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateConfigJson();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function removeSiteRow(button) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const row = button.closest('tr');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const siteNameInput = row.querySelector('.site-name-input');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const originalName = siteNameInput.getAttribute('data-original');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedSitesList = detectedSitesList.filter(s =&gt; s !== originalName);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedSites.delete(originalName);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateSitesStudiesTables();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateDetectedSitesStudiesUI();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function removeStudyRow(button) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const row = button.closest('tr');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const studyNameInput = row.querySelector('.study-name-input');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const originalName = studyNameInput.getAttribute('data-original');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedStudiesList = detectedStudiesList.filter(s =&gt; s !== originalName);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedStudies.delete(originalName);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateSitesStudiesTables();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateDetectedSitesStudiesUI();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateConfigJson() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const config = {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>studyKeywords,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>siteAbbreviations</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('configJson').value = JSON.stringify(config, null, 2);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function exportConfig() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const configText = document.getElementById('configJson').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (!configText) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>alert('No configuration to export yet.');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const blob = new Blob([configText], { type: 'application/json' });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const url = URL.createObjectURL(blob);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const a = document.createElement('a');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>a.href = url;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>a.download = 'visit-matcher-config.json';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>a.click();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>URL.revokeObjectURL(url);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function importConfig() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const input = document.createElement('input');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input.type = 'file';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input.accept = '.json,application/json';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input.onchange = event =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const file = event.target.files[0];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!file) return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const reader = new FileReader();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>reader.onload = e =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const config = JSON.parse(e.target.result);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>studyKeywords = config.studyKeywords || [];</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>siteAbbreviations = config.siteAbbreviations || [];</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>renderStudyKeywordRows();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>renderSiteAbbreviationRows();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>updateConfigJson();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>alert('Configuration imported successfully.');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} catch (err) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>alert('Failed to import configuration. Please check the file format.');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>reader.readAsText(file);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input.click();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function addSiteManually() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedSitesList.push('NEW SITE');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedSites.add('NEW SITE');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateSitesStudiesTables();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateDetectedSitesStudiesUI();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function addStudyManually() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedStudiesList.push('NEW STUDY');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>detectedStudies.add('NEW STUDY');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateSitesStudiesTables();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateDetectedSitesStudiesUI();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('callLogInput').addEventListener('change', function() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>handleFileInput(this, document.getElementById('callLogFileName'), data =&gt; callLogData = data);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('validationInput').addEventListener('change', function() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>handleFileInput(this, document.getElementById('validationFileName'), data =&gt; validationData = data);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function setupDropZone(dropZoneId, inputId) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const dropZone = document.getElementById(dropZoneId);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const input = document.getElementById(inputId);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>dropZone.addEventListener('click', () =&gt; input.click());</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>dropZone.addEventListener(eventName, e =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>e.stopPropagation();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>['dragenter', 'dragover'].forEach(eventName =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>dropZone.addEventListener(eventName, () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>dropZone.classList.add('drag-over');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>['dragleave', 'drop'].forEach(eventName =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>dropZone.addEventListener(eventName, () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>dropZone.classList.remove('drag-over');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>dropZone.addEventListener('drop', e =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const dt = e.dataTransfer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const files = dt.files;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (files &amp;&amp; files[0]) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>input.files = files;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>input.dispatchEvent(new Event('change'));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>setupDropZone('callLogDropZone', 'callLogInput');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setupDropZone('validationDropZone', 'validationInput');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('matchButton').addEventListener('click', matchData);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('downloadMatchedButton').addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>downloadExcelFromRows(matchedRows, 'matched_rows.xlsx');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('downloadUnmatchedButton').addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>downloadExcelFromRows(unmatchedCallRows, 'unmatched_calls.xlsx');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('resetButton').addEventListener('click', resetApp);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('addStudyKeywordButton').addEventListener('click', addStudyKeyword);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('addSiteAbbreviationButton').addEventListener('click', addSiteAbbreviation);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('exportConfigButton').addEventListener('click', exportConfig);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('importConfigButton').addEventListener('click', importConfig);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('addSiteButton').addEventListener('click', addSiteManually);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('addStudyButton').addEventListener('click', addStudyManually);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>updateConfigJson();</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
