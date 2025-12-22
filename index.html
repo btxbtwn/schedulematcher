@@ -207,15 +207,15 @@
             font-weight: 600;
         }
 
-        .config-row {
-            display: flex;
+        .mapping-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
             gap: 12px;
             margin-bottom: 12px;
             align-items: center;
         }
 
-        .config-row input {
-            flex: 1;
+        .mapping-row input {
             padding: 8px 12px;
             border: 1px solid rgba(94, 82, 64, 0.2);
             border-radius: 6px;
@@ -223,44 +223,24 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
-        .config-row button {
+        .mapping-row button {
             padding: 8px 16px;
             flex-shrink: 0;
         }
 
-        .sites-list {
+        .mapping-header {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .site-tag {
-            background: rgba(33, 128, 141, 0.1);
-            border: 1px solid rgba(33, 128, 141, 0.3);
-            border-radius: 6px;
-            padding: 8px 12px;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-weight: 600;
             font-size: 13px;
             color: var(--color-text);
+        }
+
+        .mapping-header div {
             text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-
-        .site-tag button {
-            padding: 2px 6px;
-            font-size: 11px;
-            background: rgba(192, 21, 47, 0.2);
-            color: var(--color-error);
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        .site-tag button:hover {
-            background: rgba(192, 21, 47, 0.3);
+            padding: 8px 0;
         }
 
         .help-text {
@@ -407,6 +387,14 @@
             button {
                 width: 100%;
             }
+
+            .mapping-row {
+                grid-template-columns: 1fr;
+            }
+
+            .mapping-header {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -417,8 +405,7 @@
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('matcher')">📊 Matcher</button>
-            <button class="tab-btn" onclick="switchTab('config')">⚙️ Configuration</button>
-            <button class="tab-btn" onclick="switchTab('comparison')">📋 Sites & Studies</button>
+            <button class="tab-btn" onclick="switchTab('config')">🏥 Sites and Studies</button>
         </div>
 
         <!-- MATCHER TAB -->
@@ -524,72 +511,40 @@
             </div>
         </div>
 
-        <!-- CONFIGURATION TAB -->
+        <!-- SITES AND STUDIES TAB -->
         <div id="configTab" class="tab-content">
             <div class="card">
                 <div class="config-section">
-                    <h3>📚 Study Mappings</h3>
-                    <p class="help-text">Add study keywords that will be recognized during matching. For example, if you add "BIPOLAR-101" with keyword "BIPOLAR", then "BIPOLAR Treatment Study" will map to "BIPOLAR-101".</p>
-                    <div id="studyMappings"></div>
-                    <button class="btn-primary" onclick="addStudyMapping()" style="margin-top: 12px;">+ Add Study Mapping</button>
-                </div>
-
-                <div class="config-section">
                     <h3>🏥 Site Mappings</h3>
-                    <p class="help-text">Add site abbreviations. For example, "NEW YORK" could map to "NY".</p>
+                    <p class="help-text">Match site names between Grove and CRIO. Each row creates a pair that the app will recognize as the same location.</p>
+                    <div class="mapping-header">
+                        <div>Grove Site</div>
+                        <div>CRIO Site</div>
+                        <div style="width: 80px;"></div>
+                    </div>
                     <div id="siteMappings"></div>
-                    <button class="btn-primary" onclick="addSiteMapping()" style="margin-top: 12px;">+ Add Site Mapping</button>
+                    <button class="btn-primary" onclick="addSiteMapping()" style="margin-top: 12px;">+ Add Site Match</button>
                 </div>
 
                 <div class="config-section">
-                    <h3>Export / Import Settings</h3>
+                    <h3>📚 Study Mappings</h3>
+                    <p class="help-text">Match study names between Grove and CRIO. Each row creates a pair that the app will recognize as the same study.</p>
+                    <div class="mapping-header">
+                        <div>Grove Study</div>
+                        <div>CRIO Study</div>
+                        <div style="width: 80px;"></div>
+                    </div>
+                    <div id="studyMappings"></div>
+                    <button class="btn-primary" onclick="addStudyMapping()" style="margin-top: 12px;">+ Add Study Match</button>
+                </div>
+
+                <div class="config-section">
+                    <h3>💾 Export / Import Settings</h3>
                     <p class="help-text">Save your mappings and share them with team members or use on another device.</p>
                     <div style="display: flex; gap: 12px;">
                         <button class="btn-primary" onclick="exportConfig()">⬇️ Export Settings</button>
                         <button class="btn-primary" onclick="document.getElementById('importFile').click()">⬆️ Import Settings</button>
                         <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importConfig(event)" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SITES & STUDIES TAB -->
-        <div id="comparisonTab" class="tab-content">
-            <div class="card">
-                <h2 style="margin: 0 0 20px 0;">Discovered Sites & Studies</h2>
-                <p class="help-text">Sites and studies are automatically discovered when you run matching. You can add or delete sites below to keep your configuration up to date as your studies evolve.</p>
-                
-                <div class="config-section">
-                    <h3>🏥 Discovered Sites</h3>
-                    <p class="help-text">Manage sites that have been detected from your files.</p>
-                    <div id="discoveredSitesList" class="sites-list">
-                        <div style="grid-column: 1 / -1; color: var(--color-text-secondary); font-size: 13px;">Run matching first to discover sites</div>
-                    </div>
-                </div>
-
-                <div class="config-section">
-                    <h3>📚 Discovered Studies</h3>
-                    <p class="help-text">Manage studies that have been detected from your files.</p>
-                    <div id="discoveredStudiesList" class="sites-list">
-                        <div style="grid-column: 1 / -1; color: var(--color-text-secondary); font-size: 13px;">Run matching first to discover studies</div>
-                    </div>
-                </div>
-
-                <div class="config-section">
-                    <h3>✏️ Manual Site Management</h3>
-                    <p class="help-text">Add or remove sites manually as needed.</p>
-                    <div class="config-row">
-                        <input type="text" id="manualSiteInput" placeholder="Enter site name (e.g., NEW YORK)">
-                        <button class="btn-primary" onclick="addManualSite()">Add Site</button>
-                    </div>
-                </div>
-
-                <div class="config-section">
-                    <h3>✏️ Manual Study Management</h3>
-                    <p class="help-text">Add or remove studies manually as needed.</p>
-                    <div class="config-row">
-                        <input type="text" id="manualStudyInput" placeholder="Enter study name (e.g., BIPOLAR-101)">
-                        <button class="btn-primary" onclick="addManualStudy()">Add Study</button>
                     </div>
                 </div>
             </div>
@@ -600,264 +555,121 @@
         // ============ INITIALIZATION ============
         let matchedData = [];
         let unmatchedData = [];
-        let discoveredSites = new Set();
-        let discoveredStudies = new Set();
-        let studyMappings = {};
-        let siteMappings = {};
+        let siteMappings = [];
+        let studyMappings = [];
 
         // Load all data from localStorage on startup
         function initializeApp() {
-            loadStudyMappings();
             loadSiteMappings();
-            loadDiscoveredSites();
-            loadDiscoveredStudies();
-            renderStudyMappings();
+            loadStudyMappings();
             renderSiteMappings();
-            updateDiscoveredSitesDisplay();
-            updateDiscoveredStudiesDisplay();
+            renderStudyMappings();
         }
 
         // ============ LOCAL STORAGE FUNCTIONS ============
-        function loadStudyMappings() {
-            const saved = localStorage.getItem('studyMappings');
-            studyMappings = saved ? JSON.parse(saved) : getDefaultStudyMappings();
-        }
-
-        function getDefaultStudyMappings() {
-            return {
-                'MRNA-1273': ['1273', 'MODERNA 1273'],
-                'MRNA-1403': ['1403', 'MODERNA 1403'],
-                'VAXCYTE': ['VAXCYTE', 'VAX31'],
-                'NOVAVAX': ['NOVAVAX'],
-                'VIKING': ['VIKING']
-            };
-        }
-
-        function saveStudyMappings() {
-            localStorage.setItem('studyMappings', JSON.stringify(studyMappings));
-        }
-
         function loadSiteMappings() {
             const saved = localStorage.getItem('siteMappings');
-            siteMappings = saved ? JSON.parse(saved) : {};
+            siteMappings = saved ? JSON.parse(saved) : [];
         }
 
         function saveSiteMappings() {
             localStorage.setItem('siteMappings', JSON.stringify(siteMappings));
         }
 
-        function loadDiscoveredSites() {
-            const saved = localStorage.getItem('discoveredSites');
-            discoveredSites = new Set(saved ? JSON.parse(saved) : []);
+        function loadStudyMappings() {
+            const saved = localStorage.getItem('studyMappings');
+            studyMappings = saved ? JSON.parse(saved) : getDefaultStudyMappings();
         }
 
-        function saveDiscoveredSites() {
-            localStorage.setItem('discoveredSites', JSON.stringify(Array.from(discoveredSites)));
+        function getDefaultStudyMappings() {
+            return [
+                { grove: 'MRNA-1273', crio: '1273' },
+                { grove: 'MRNA-1273', crio: 'MODERNA 1273' },
+                { grove: 'MRNA-1403', crio: '1403' },
+                { grove: 'MRNA-1403', crio: 'MODERNA 1403' },
+                { grove: 'VAXCYTE', crio: 'VAX31' },
+                { grove: 'NOVAVAX', crio: 'NOVAVAX' },
+                { grove: 'VIKING', crio: 'VIKING' }
+            ];
         }
 
-        function loadDiscoveredStudies() {
-            const saved = localStorage.getItem('discoveredStudies');
-            discoveredStudies = new Set(saved ? JSON.parse(saved) : []);
-        }
-
-        function saveDiscoveredStudies() {
-            localStorage.setItem('discoveredStudies', JSON.stringify(Array.from(discoveredStudies)));
-        }
-
-        // ============ STUDY MAPPINGS ============
-        function renderStudyMappings() {
-            const container = document.getElementById('studyMappings');
-            if (Object.keys(studyMappings).length === 0) {
-                container.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 13px;">No study mappings yet.</p>';
-                return;
-            }
-
-            container.innerHTML = Object.entries(studyMappings).map(([study, keywords], idx) => `
-                <div class="config-row">
-                    <input type="text" placeholder="Study Name" value="${escapeHtml(study)}" 
-                           onchange="updateStudyMappingName(${idx}, this.value)">
-                    <input type="text" placeholder="Keywords (comma-separated)" value="${escapeHtml(keywords.join(', '))}" 
-                           onchange="updateStudyMappingKeywords(${idx}, this.value)">
-                    <button class="btn-danger" onclick="deleteStudyMapping('${escapeHtml(study)}')">Delete</button>
-                </div>
-            `).join('');
-        }
-
-        function addStudyMapping() {
-            const study = prompt('Enter study name (e.g., "BIPOLAR-101"):');
-            if (!study || !study.trim()) return;
-            const keyword = prompt('Enter primary keyword (e.g., "BIPOLAR"):');
-            if (!keyword || !keyword.trim()) return;
-
-            studyMappings[study.trim()] = [keyword.trim()];
-            saveStudyMappings();
-            renderStudyMappings();
-        }
-
-        function updateStudyMappingName(idx, newName) {
-            const entries = Object.entries(studyMappings);
-            const oldName = entries[idx][0];
-            const keywords = studyMappings[oldName];
-
-            delete studyMappings[oldName];
-            studyMappings[newName.trim()] = keywords;
-            saveStudyMappings();
-        }
-
-        function updateStudyMappingKeywords(idx, keywordStr) {
-            const entries = Object.entries(studyMappings);
-            const studyName = entries[idx][0];
-            studyMappings[studyName] = keywordStr.split(',').map(k => k.trim()).filter(k => k);
-            saveStudyMappings();
-        }
-
-        function deleteStudyMapping(study) {
-            if (confirm(`Delete study mapping for "${study}"?`)) {
-                delete studyMappings[study];
-                saveStudyMappings();
-                renderStudyMappings();
-            }
+        function saveStudyMappings() {
+            localStorage.setItem('studyMappings', JSON.stringify(studyMappings));
         }
 
         // ============ SITE MAPPINGS ============
         function renderSiteMappings() {
             const container = document.getElementById('siteMappings');
-            if (Object.keys(siteMappings).length === 0) {
-                container.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 13px;">No site mappings yet.</p>';
+            if (siteMappings.length === 0) {
+                container.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 13px;">No site mappings yet. Add your first match above.</p>';
                 return;
             }
 
-            container.innerHTML = Object.entries(siteMappings).map(([fullName, abbr], idx) => `
-                <div class="config-row">
-                    <input type="text" placeholder="Full Site Name" value="${escapeHtml(fullName)}" 
-                           onchange="updateSiteMappingName(${idx}, this.value)">
-                    <input type="text" placeholder="Abbreviation" value="${escapeHtml(abbr)}" 
-                           onchange="updateSiteMappingAbbr('${escapeHtml(fullName)}', this.value)">
-                    <button class="btn-danger" onclick="deleteSiteMapping('${escapeHtml(fullName)}')">Delete</button>
+            container.innerHTML = siteMappings.map((mapping, idx) => `
+                <div class="mapping-row">
+                    <input type="text" placeholder="Grove site name" value="${escapeHtml(mapping.grove)}" 
+                           onchange="updateSiteMapping(${idx}, 'grove', this.value)">
+                    <input type="text" placeholder="CRIO site name" value="${escapeHtml(mapping.crio)}" 
+                           onchange="updateSiteMapping(${idx}, 'crio', this.value)">
+                    <button class="btn-danger" onclick="deleteSiteMapping(${idx})">Delete</button>
                 </div>
             `).join('');
         }
 
         function addSiteMapping() {
-            const fullName = prompt('Enter full site name (e.g., "NEW YORK"):');
-            if (!fullName || !fullName.trim()) return;
-            const abbr = prompt('Enter abbreviation (e.g., "NY"):');
-            if (!abbr || !abbr.trim()) return;
-
-            siteMappings[fullName.trim()] = abbr.trim();
+            siteMappings.push({ grove: '', crio: '' });
             saveSiteMappings();
             renderSiteMappings();
         }
 
-        function updateSiteMappingName(idx, newName) {
-            const entries = Object.entries(siteMappings);
-            const oldName = entries[idx][0];
-            const abbr = siteMappings[oldName];
-
-            delete siteMappings[oldName];
-            siteMappings[newName.trim()] = abbr;
+        function updateSiteMapping(idx, field, value) {
+            siteMappings[idx][field] = value.trim();
             saveSiteMappings();
         }
 
-        function updateSiteMappingAbbr(fullName, newAbbr) {
-            siteMappings[fullName] = newAbbr.trim();
-            saveSiteMappings();
-        }
-
-        function deleteSiteMapping(fullName) {
-            if (confirm(`Delete site mapping for "${fullName}"?`)) {
-                delete siteMappings[fullName];
+        function deleteSiteMapping(idx) {
+            if (confirm('Delete this site mapping?')) {
+                siteMappings.splice(idx, 1);
                 saveSiteMappings();
                 renderSiteMappings();
             }
         }
 
-        // ============ DISCOVERED SITES & STUDIES ============
-        function updateDiscoveredSitesDisplay() {
-            const container = document.getElementById('discoveredSitesList');
-            if (discoveredSites.size === 0) {
-                container.innerHTML = '<div style="grid-column: 1 / -1; color: var(--color-text-secondary); font-size: 13px;">Run matching first to discover sites</div>';
+        // ============ STUDY MAPPINGS ============
+        function renderStudyMappings() {
+            const container = document.getElementById('studyMappings');
+            if (studyMappings.length === 0) {
+                container.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 13px;">No study mappings yet. Add your first match above.</p>';
                 return;
             }
 
-            container.innerHTML = Array.from(discoveredSites).sort().map(site => `
-                <div class="site-tag">
-                    <span>${escapeHtml(site)}</span>
-                    <button onclick="removeSite('${escapeHtml(site)}')">✕</button>
+            container.innerHTML = studyMappings.map((mapping, idx) => `
+                <div class="mapping-row">
+                    <input type="text" placeholder="Grove study name" value="${escapeHtml(mapping.grove)}" 
+                           onchange="updateStudyMapping(${idx}, 'grove', this.value)">
+                    <input type="text" placeholder="CRIO study name" value="${escapeHtml(mapping.crio)}" 
+                           onchange="updateStudyMapping(${idx}, 'crio', this.value)">
+                    <button class="btn-danger" onclick="deleteStudyMapping(${idx})">Delete</button>
                 </div>
             `).join('');
         }
 
-        function updateDiscoveredStudiesDisplay() {
-            const container = document.getElementById('discoveredStudiesList');
-            if (discoveredStudies.size === 0) {
-                container.innerHTML = '<div style="grid-column: 1 / -1; color: var(--color-text-secondary); font-size: 13px;">Run matching first to discover studies</div>';
-                return;
-            }
-
-            container.innerHTML = Array.from(discoveredStudies).sort().map(study => `
-                <div class="site-tag">
-                    <span>${escapeHtml(study)}</span>
-                    <button onclick="removeStudy('${escapeHtml(study)}')">✕</button>
-                </div>
-            `).join('');
+        function addStudyMapping() {
+            studyMappings.push({ grove: '', crio: '' });
+            saveStudyMappings();
+            renderStudyMappings();
         }
 
-        function addManualSite() {
-            const input = document.getElementById('manualSiteInput');
-            const site = input.value.trim();
-            if (!site) {
-                showError('Please enter a site name');
-                return;
-            }
-
-            if (discoveredSites.has(site)) {
-                showError(`Site "${site}" already exists`);
-                return;
-            }
-
-            discoveredSites.add(site);
-            saveDiscoveredSites();
-            updateDiscoveredSitesDisplay();
-            input.value = '';
-            showSuccess(`Site "${site}" added`);
+        function updateStudyMapping(idx, field, value) {
+            studyMappings[idx][field] = value.trim();
+            saveStudyMappings();
         }
 
-        function addManualStudy() {
-            const input = document.getElementById('manualStudyInput');
-            const study = input.value.trim();
-            if (!study) {
-                showError('Please enter a study name');
-                return;
-            }
-
-            if (discoveredStudies.has(study)) {
-                showError(`Study "${study}" already exists`);
-                return;
-            }
-
-            discoveredStudies.add(study);
-            saveDiscoveredStudies();
-            updateDiscoveredStudiesDisplay();
-            input.value = '';
-            showSuccess(`Study "${study}" added`);
-        }
-
-        function removeSite(site) {
-            if (confirm(`Remove site "${site}"?`)) {
-                discoveredSites.delete(site);
-                saveDiscoveredSites();
-                updateDiscoveredSitesDisplay();
-                showSuccess(`Site "${site}" removed`);
-            }
-        }
-
-        function removeStudy(study) {
-            if (confirm(`Remove study "${study}"?`)) {
-                discoveredStudies.delete(study);
-                saveDiscoveredStudies();
-                updateDiscoveredStudiesDisplay();
-                showSuccess(`Study "${study}" removed`);
+        function deleteStudyMapping(idx) {
+            if (confirm('Delete this study mapping?')) {
+                studyMappings.splice(idx, 1);
+                saveStudyMappings();
+                renderStudyMappings();
             }
         }
 
@@ -870,23 +682,41 @@
             return digits.length >= 10 ? digits.slice(-10) : digits;
         }
 
-        function cleanSite(site) {
+        function normalizeSite(site, source) {
             if (!site || site === null) return null;
             const s = String(site).trim().toUpperCase();
-            const first = s.split(/[\s\-]/)[0];
-            return first;
+            
+            // Check mappings
+            for (const mapping of siteMappings) {
+                const groveUpper = mapping.grove.toUpperCase();
+                const crioUpper = mapping.crio.toUpperCase();
+                
+                if (source === 'grove' && s.includes(groveUpper)) {
+                    return groveUpper;
+                } else if (source === 'crio' && s.includes(crioUpper)) {
+                    // Return the Grove equivalent for matching
+                    return mapping.grove.toUpperCase();
+                }
+            }
+            
+            // If no mapping found, take first word
+            return s.split(/[\s\-]/)[0];
         }
 
-        function normalizeStudy(study) {
+        function normalizeStudy(study, source) {
             if (!study || study === null) return 'UNKNOWN';
             const s = String(study).toUpperCase();
 
-            // Check custom mappings
-            for (const [studyName, keywords] of Object.entries(studyMappings)) {
-                for (const keyword of keywords) {
-                    if (s.includes(keyword.toUpperCase())) {
-                        return studyName;
-                    }
+            // Check mappings
+            for (const mapping of studyMappings) {
+                const groveUpper = mapping.grove.toUpperCase();
+                const crioUpper = mapping.crio.toUpperCase();
+                
+                if (source === 'grove' && s.includes(groveUpper)) {
+                    return groveUpper;
+                } else if (source === 'crio' && s.includes(crioUpper)) {
+                    // Return the Grove equivalent for matching
+                    return mapping.grove.toUpperCase();
                 }
             }
 
@@ -956,36 +786,15 @@
 
         function performMatch(callData, valData) {
             try {
-                // Discover and save sites and studies
-                discoveredSites.clear();
-                discoveredStudies.clear();
-
-                callData.rows.forEach(row => {
-                    const site = row['SITE'];
-                    if (site) discoveredSites.add(site);
-                    const study = row['STUDY'];
-                    if (study) discoveredStudies.add(study);
-                });
-
-                valData.rows.forEach(row => {
-                    const site = row['Site Name'];
-                    if (site) discoveredSites.add(site);
-                    const study = row['Study Name'];
-                    if (study) discoveredStudies.add(study);
-                });
-
-                saveDiscoveredSites();
-                saveDiscoveredStudies();
-
                 // Prepare validation data
                 const valMap = new Map();
                 valData.rows.forEach(row => {
                     const phoneClean = cleanPhone(row['Mobile Phone']);
-                    const siteClean = cleanSite(row['Site Name']);
-                    const studyNorm = normalizeStudy(row['Study Name']);
+                    const siteNorm = normalizeSite(row['Site Name'], 'crio');
+                    const studyNorm = normalizeStudy(row['Study Name'], 'crio');
 
-                    if (phoneClean && siteClean) {
-                        const key = `${phoneClean}|${siteClean}|${studyNorm}`;
+                    if (phoneClean && siteNorm) {
+                        const key = `${phoneClean}|${siteNorm}|${studyNorm}`;
                         valMap.set(key, {
                             name: row['Subject Full Name'] || '',
                             phone: row['Mobile Phone'] || '',
@@ -1002,9 +811,9 @@
 
                 callData.rows.forEach(row => {
                     const phoneClean = cleanPhone(row['PHONE #']);
-                    const siteClean = cleanSite(row['SITE']);
-                    const studyNorm = normalizeStudy(row['STUDY']);
-                    const key = `${phoneClean}|${siteClean}|${studyNorm}`;
+                    const siteNorm = normalizeSite(row['SITE'], 'grove');
+                    const studyNorm = normalizeStudy(row['STUDY'], 'grove');
+                    const key = `${phoneClean}|${siteNorm}|${studyNorm}`;
 
                     const match = valMap.get(key);
 
@@ -1031,8 +840,6 @@
                 });
 
                 displayResults();
-                updateDiscoveredSitesDisplay();
-                updateDiscoveredStudiesDisplay();
                 document.getElementById('loading').classList.remove('visible');
                 document.getElementById('resultsSection').classList.add('visible');
                 showSuccess(`✓ Matching complete: ${matchedData.length} matched, ${unmatchedData.length} unmatched`);
@@ -1116,10 +923,8 @@
 
         function exportConfig() {
             const config = {
-                studyMappings: studyMappings,
                 siteMappings: siteMappings,
-                discoveredSites: Array.from(discoveredSites),
-                discoveredStudies: Array.from(discoveredStudies),
+                studyMappings: studyMappings,
                 exportDate: new Date().toISOString()
             };
             const json = JSON.stringify(config, null, 2);
@@ -1137,20 +942,14 @@
             reader.onload = (e) => {
                 try {
                     const config = JSON.parse(e.target.result);
-                    studyMappings = config.studyMappings || {};
-                    siteMappings = config.siteMappings || {};
-                    discoveredSites = new Set(config.discoveredSites || []);
-                    discoveredStudies = new Set(config.discoveredStudies || []);
+                    siteMappings = config.siteMappings || [];
+                    studyMappings = config.studyMappings || [];
 
-                    saveStudyMappings();
                     saveSiteMappings();
-                    saveDiscoveredSites();
-                    saveDiscoveredStudies();
+                    saveStudyMappings();
 
-                    renderStudyMappings();
                     renderSiteMappings();
-                    updateDiscoveredSitesDisplay();
-                    updateDiscoveredStudiesDisplay();
+                    renderStudyMappings();
 
                     showSuccess('Settings imported successfully!');
                 } catch (err) {
