@@ -924,12 +924,13 @@
                     if (phoneClean && siteNorm) {
                         const key = `${phoneClean}|${siteNorm}|${studyNorm}`;
                         valMap.set(key, {
-                            name: row['Subject Full Name'] || '',
-                            phone: row['Mobile Phone'] || '',
-                            appointmentStatus: row['Appointment Status'] || '',
-                            subjectStatus: row['Subject Status'] || '',
-                            cancellationType: row['Appointment Cancellation Type'] || ''
-                        });
+    name: row['Subject Full Name'] || '',
+    phone: row['Mobile Phone'] || '',
+    scheduledTime: row['Scheduled Time'] || '',  // ✅ ADD THIS LINE
+    appointmentStatus: row['Appointment Status'] || '',
+    subjectStatus: row['Subject Status'] || '',
+    cancellationType: row['Appointment Cancellation Type'] || ''
+});
                     }
                 });
 
@@ -947,21 +948,24 @@
 
                    if (match) {
     matchedData.push({
-        patient: row['Title'] || '',           // ✅ Grove uses 'Title' for patient names
-        phone: row['Phone #'] || '',          // ✅ Correct Grove column
-        site: row['Site'] || '',              // ✅ Correct Grove column
-        study: row['Study'] || '',            // ✅ Correct Grove column
+        patient: row['Title'] || '',
+        phone: row['Phone #'] || '',
+        site: row['Site'] || '',
+        study: row['Study'] || '',
+        createdTime: row['Created Time'] || '',  // ✅ ADD THIS LINE
         valName: match.name,
+        scheduledTime: match.scheduledTime || '',  // ✅ ADD THIS LINE
         appointmentStatus: match.appointmentStatus,
         subjectStatus: match.subjectStatus,
         cancellationType: match.cancellationType
     });
 } else {
     unmatchedData.push({
-        patient: row['Title'] || '',          // ✅ Same here for unmatched
+        patient: row['Title'] || '',
         phone: row['Phone #'] || '',
         site: row['Site'] || '',
         study: row['Study'] || '',
+        createdTime: row['Created Time'] || '',  // ✅ ADD THIS LINE
         issue: 'No match found'
     });
 }
