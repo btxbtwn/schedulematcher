@@ -1033,58 +1033,61 @@
             downloadCSV(headers, rows, 'Unmatched_Records.csv');
         }
 
-                function downloadMasterExport() {
-            const headers = [
-                'PATIENT', 
-                'PHONE #', 
-                'SITE', 
-                'STUDY', 
-                'STATUS',
-                'Validation_Name', 
-                'Appointment Status', 
-                'Subject Status', 
-                'Appointment Cancellation Type',
-                'Issue/Notes'
-            ];
-            
-            const rows = [];
-            
-            matchedData.forEach(row => {
-                rows.push([
-                    row.patient,
-                    row.phone,
-                    row.site,
-                    row.study,
-                    'MATCHED',
-                    row.valName,
-                    row.appointmentStatus,
-                    row.subjectStatus,
-                    row.cancellationType,
-                    ''
-                ]);
-            });
-            
-            unmatchedData.forEach(row => {
-                rows.push([
-                    row.patient,
-                    row.phone,
-                    row.site,
-                    row.study,
-                    'UNMATCHED',
-                    '',
-                    '',
-                    '',
-                    '',
-                    row.issue
-                ]);
-            });
-            
-            const today = new Date().toISOString().split('T')[0];
-            const filename = `Master_Export_${today}.csv`;
-            
-            downloadCSV(headers, rows, filename);
-            showSuccess(`✓ Master export complete: ${matchedData.length} matched + ${unmatchedData.length} unmatched = ${rows.length} total records`);
-        }
+              function downloadMasterExport() {
+    const headers = [
+        'PATIENT', 
+        'PHONE #', 
+        'SITE', 
+        'STUDY', 
+        'STATUS',
+        'Validation_Name', 
+        'Visit Date/Time',
+        'Appointment Status', 
+        'Subject Status', 
+        'Appointment Cancellation Type',
+        'Issue/Notes'
+    ];
+    
+    const rows = [];
+    
+    matchedData.forEach(row => {
+        rows.push([
+            row.patient,
+            row.phone,
+            row.site,
+            row.study,
+            'MATCHED',
+            row.valName,
+            row.scheduledTime || '',  // Add scheduled time
+            row.appointmentStatus,
+            row.subjectStatus,
+            row.cancellationType,
+            ''
+        ]);
+    });
+    
+    unmatchedData.forEach(row => {
+        rows.push([
+            row.patient,
+            row.phone,
+            row.site,
+            row.study,
+            'UNMATCHED',
+            '',
+            '',  // No scheduled time for unmatched
+            '',
+            '',
+            '',
+            row.issue
+        ]);
+    });
+    
+    const today = new Date().toISOString().split('T')[0];
+    const filename = `Master_Export_${today}.csv`;
+    
+    downloadCSV(headers, rows, filename);
+    showSuccess(`✓ Master export complete: ${matchedData.length} matched + ${unmatchedData.length} unmatched = ${rows.length} total records`);
+}
 
         function downloadCSV(headers, rows, filename) {
             const csv = [
