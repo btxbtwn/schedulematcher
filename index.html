@@ -938,26 +938,27 @@
 
                     const match = valMap.get(key);
 
-                    if (match) {
-                        matchedData.push({
-                            patient: row['PATIENT'] || '',
-                            phone: row['PHONE #'] || '',
-                            site: row['SITE'] || '',
-                            study: row['STUDY'] || '',
-                            valName: match.name,
-                            appointmentStatus: match.appointmentStatus,
-                            subjectStatus: match.subjectStatus,
-                            cancellationType: match.cancellationType
-                        });
-                    } else {
-                        matchedData.push({
-                            patient: row['Title'] || '',  // Grove uses 'Title' not 'PATIENT'
-                            phone: row['Phone #'] || '',
-                            site: row['Site'] || '',
-                            study: row['Study'] || '',
-                            issue: 'No match found'
-                        });
-                    }
+                   if (match) {
+    matchedData.push({
+        patient: row['Title'] || '',           // ✅ Grove uses 'Title' for patient names
+        phone: row['Phone #'] || '',          // ✅ Correct Grove column
+        site: row['Site'] || '',              // ✅ Correct Grove column
+        study: row['Study'] || '',            // ✅ Correct Grove column
+        valName: match.name,
+        appointmentStatus: match.appointmentStatus,
+        subjectStatus: match.subjectStatus,
+        cancellationType: match.cancellationType
+    });
+} else {
+    unmatchedData.push({
+        patient: row['Title'] || '',          // ✅ Same here for unmatched
+        phone: row['Phone #'] || '',
+        site: row['Site'] || '',
+        study: row['Study'] || '',
+        issue: 'No match found'
+    });
+}
+
                 });
 
                 displayResults();
