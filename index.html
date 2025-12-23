@@ -931,9 +931,9 @@
                 unmatchedData = [];
 
                 callData.rows.forEach(row => {
-                    const phoneClean = cleanPhone(row['PHONE #']);
-                    const siteNorm = normalizeSite(row['SITE'], 'grove');
-                    const studyNorm = normalizeStudy(row['STUDY'], 'grove');
+                    const phoneClean = cleanPhone(row['Phone #']);  // Changed from 'PHONE #'
+                    const siteNorm = normalizeSite(row['Site'], 'grove');  // Changed from 'SITE'
+                    const studyNorm = normalizeStudy(row['Study'], 'grove');  // Changed from 'STUDY'
                     const key = `${phoneClean}|${siteNorm}|${studyNorm}`;
 
                     const match = valMap.get(key);
@@ -950,11 +950,11 @@
                             cancellationType: match.cancellationType
                         });
                     } else {
-                        unmatchedData.push({
-                            patient: row['PATIENT'] || '',
-                            phone: row['PHONE #'] || '',
-                            site: row['SITE'] || '',
-                            study: row['STUDY'] || '',
+                        matchedData.push({
+                            patient: row['Title'] || '',  // Grove uses 'Title' not 'PATIENT'
+                            phone: row['Phone #'] || '',
+                            site: row['Site'] || '',
+                            study: row['Study'] || '',
                             issue: 'No match found'
                         });
                     }
