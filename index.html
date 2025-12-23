@@ -952,7 +952,7 @@
         phone: row['Phone #'] || '',
         site: row['Site'] || '',
         study: row['Study'] || '',
-        createdTime: row['Created Time'] || '',  // ✅ ADD THIS LINE
+        createdTime: row['Created At'] || '',  // ✅ ADD THIS LINE
         valName: match.name,
         scheduledTime: match.scheduledTime || '',  // ✅ ADD THIS LINE
         appointmentStatus: match.appointmentStatus,
@@ -965,7 +965,7 @@
         phone: row['Phone #'] || '',
         site: row['Site'] || '',
         study: row['Study'] || '',
-        createdTime: row['Created Time'] || '',  // ✅ ADD THIS LINE
+        createdTime: row['Created At'] || '',  // ✅ ADD THIS LINE
         issue: 'No match found'
     });
 }
@@ -1044,7 +1044,7 @@
         'SITE', 
         'STUDY', 
         'STATUS',
-        'Created Time (Grove)',
+        'Created At (Grove)',
         'Validation_Name', 
         'Visit Date/Time',
         'Appointment Status', 
