@@ -1044,16 +1044,16 @@
         'SITE', 
         'STUDY', 
         'STATUS',
-        'Created Time (Grove)',  // ✅ This is the Grove created date
+        'Created Time (Grove)',
         'Validation_Name', 
-        'Visit Date/Time',       // ✅ This is the scheduled time from CRIO
+        'Visit Date/Time',
         'Appointment Status', 
         'Subject Status', 
         'Appointment Cancellation Type',
         'Issue/Notes'
     ];
     
-    const rows = [];
+    const rows = [];  // ✅ ADD THIS LINE - Initialize empty array
     
     matchedData.forEach(row => {
         rows.push([
