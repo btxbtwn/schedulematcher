@@ -375,6 +375,17 @@
             display: block;
         }
 
+        .info-badge {
+            display: inline-block;
+            background: rgba(33, 128, 141, 0.1);
+            color: var(--color-primary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
         @media (max-width: 768px) {
             .upload-section {
                 grid-template-columns: 1fr;
@@ -515,8 +526,8 @@
         <div id="configTab" class="tab-content">
             <div class="card">
                 <div class="config-section">
-                    <h3>🏥 Site Mappings</h3>
-                    <p class="help-text">Match site names between Grove and CRIO. Each row creates a pair that the app will recognize as the same location.</p>
+                    <h3>🏥 Site Mappings<span class="info-badge" id="siteMappingCount">0 mappings</span></h3>
+                    <p class="help-text">Match site names between Grove and CRIO. Sites are automatically discovered when you upload files. Each row creates a pair that the app will recognize as the same location.</p>
                     <div class="mapping-header">
                         <div>Grove Site</div>
                         <div>CRIO Site</div>
@@ -527,8 +538,8 @@
                 </div>
 
                 <div class="config-section">
-                    <h3>📚 Study Mappings</h3>
-                    <p class="help-text">Match study names between Grove and CRIO. Each row creates a pair that the app will recognize as the same study.</p>
+                    <h3>📚 Study Mappings<span class="info-badge" id="studyMappingCount">0 mappings</span></h3>
+                    <p class="help-text">Match study names between Grove and CRIO. Studies are automatically discovered when you upload files. Each row creates a pair that the app will recognize as the same study.</p>
                     <div class="mapping-header">
                         <div>Grove Study</div>
                         <div>CRIO Study</div>
@@ -557,6 +568,10 @@
         let unmatchedData = [];
         let siteMappings = [];
         let studyMappings = [];
+        let discoveredGroveSites = new Set();
+        let discoveredCrioSites = new Set();
+        let discoveredGroveStudies = new Set();
+        let discoveredCrioStudies = new Set();
 
         // Load all data from localStorage on startup
         function initializeApp() {
@@ -597,11 +612,111 @@
             localStorage.setItem('studyMappings', JSON.stringify(studyMappings));
         }
 
+        // ============ AUTO-DISCOVERY FROM FILES ============
+        function discoverFromFiles() {
+            const callFile = document.getElementById('callFile').files[0];
+            const valFile = document.getElementById('validationFile').files[0];
+
+            if (!callFile && !valFile) return;
+
+            Promise.all([
+                callFile ? callFile.text() : Promise.resolve(null),
+                valFile ? valFile.text() : Promise.resolve(null)
+            ]).then(([callText, valText]) => {
+                if (callText) {
+                    const callData = parseCSV(callText);
+                    extractGroveData(callData);
+                }
+                if (valText) {
+                    const valData = parseCSV(valText);
+                    extractCrioData(valData);
+                }
+                autoPopulateMappings();
+            }).catch(err => {
+                console.error('Discovery error:', err);
+            });
+        }
+
+        function extractGroveData(data) {
+            data.rows.forEach(row => {
+                const site = row['SITE'];
+                const study = row['STUDY'];
+                if (site && site.trim()) discoveredGroveSites.add(site.trim());
+                if (study && study.trim()) discoveredGroveStudies.add(study.trim());
+            });
+        }
+
+        function extractCrioData(data) {
+            data.rows.forEach(row => {
+                const site = row['Site Name'];
+                const study = row['Study Name'];
+                if (site && site.trim()) discoveredCrioSites.add(site.trim());
+                if (study && study.trim()) discoveredCrioStudies.add(study.trim());
+            });
+        }
+
+        function autoPopulateMappings() {
+            let newSites = 0;
+            let newStudies = 0;
+
+            // Auto-populate sites
+            discoveredGroveSites.forEach(groveSite => {
+                // Check if this Grove site already has a mapping
+                const exists = siteMappings.some(m => m.grove === groveSite);
+                if (!exists) {
+                    siteMappings.push({ grove: groveSite, crio: '' });
+                    newSites++;
+                }
+            });
+
+            discoveredCrioSites.forEach(crioSite => {
+                // Check if this CRIO site already has a mapping
+                const exists = siteMappings.some(m => m.crio === crioSite);
+                if (!exists) {
+                    siteMappings.push({ grove: '', crio: crioSite });
+                    newSites++;
+                }
+            });
+
+            // Auto-populate studies
+            discoveredGroveStudies.forEach(groveStudy => {
+                const exists = studyMappings.some(m => m.grove === groveStudy);
+                if (!exists) {
+                    studyMappings.push({ grove: groveStudy, crio: '' });
+                    newStudies++;
+                }
+            });
+
+            discoveredCrioStudies.forEach(crioStudy => {
+                const exists = studyMappings.some(m => m.crio === crioStudy);
+                if (!exists) {
+                    studyMappings.push({ grove: '', crio: crioStudy });
+                    newStudies++;
+                }
+            });
+
+            if (newSites > 0 || newStudies > 0) {
+                saveSiteMappings();
+                saveStudyMappings();
+                renderSiteMappings();
+                renderStudyMappings();
+                
+                const message = [];
+                if (newSites > 0) message.push(`${newSites} new site(s)`);
+                if (newStudies > 0) message.push(`${newStudies} new study/studies`);
+                showSuccess(`✓ Auto-discovered ${message.join(' and ')}! Check the Sites and Studies tab to map them.`);
+            }
+        }
+
         // ============ SITE MAPPINGS ============
         function renderSiteMappings() {
             const container = document.getElementById('siteMappings');
+            const countBadge = document.getElementById('siteMappingCount');
+            
+            countBadge.textContent = `${siteMappings.length} mapping${siteMappings.length !== 1 ? 's' : ''}`;
+
             if (siteMappings.length === 0) {
-                container.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 13px;">No site mappings yet. Add your first match above.</p>';
+                container.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 13px;">No site mappings yet. Upload files to auto-discover sites, or add manually.</p>';
                 return;
             }
 
@@ -638,8 +753,12 @@
         // ============ STUDY MAPPINGS ============
         function renderStudyMappings() {
             const container = document.getElementById('studyMappings');
+            const countBadge = document.getElementById('studyMappingCount');
+            
+            countBadge.textContent = `${studyMappings.length} mapping${studyMappings.length !== 1 ? 's' : ''}`;
+
             if (studyMappings.length === 0) {
-                container.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 13px;">No study mappings yet. Add your first match above.</p>';
+                container.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 13px;">No study mappings yet. Upload files to auto-discover studies, or add manually.</p>';
                 return;
             }
 
@@ -688,6 +807,7 @@
             
             // Check mappings
             for (const mapping of siteMappings) {
+                if (!mapping.grove || !mapping.crio) continue;
                 const groveUpper = mapping.grove.toUpperCase();
                 const crioUpper = mapping.crio.toUpperCase();
                 
@@ -709,6 +829,7 @@
 
             // Check mappings
             for (const mapping of studyMappings) {
+                if (!mapping.grove || !mapping.crio) continue;
                 const groveUpper = mapping.grove.toUpperCase();
                 const crioUpper = mapping.crio.toUpperCase();
                 
@@ -971,12 +1092,14 @@
             const name = e.target.files[0]?.name || '';
             document.getElementById('callFileName').textContent = name ? `✓ ${name}` : '';
             updateRunBtn();
+            discoverFromFiles();
         });
 
         document.getElementById('validationFile')?.addEventListener('change', (e) => {
             const name = e.target.files[0]?.name || '';
             document.getElementById('validationFileName').textContent = name ? `✓ ${name}` : '';
             updateRunBtn();
+            discoverFromFiles();
         });
 
         function updateRunBtn() {
