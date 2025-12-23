@@ -1037,15 +1037,16 @@
             downloadCSV(headers, rows, 'Unmatched_Records.csv');
         }
 
-              function downloadMasterExport() {
+  function downloadMasterExport() {
     const headers = [
         'PATIENT', 
         'PHONE #', 
         'SITE', 
         'STUDY', 
         'STATUS',
+        'Created Time (Grove)',  // ✅ This is the Grove created date
         'Validation_Name', 
-        'Visit Date/Time',
+        'Visit Date/Time',       // ✅ This is the scheduled time from CRIO
         'Appointment Status', 
         'Subject Status', 
         'Appointment Cancellation Type',
@@ -1061,8 +1062,9 @@
             row.site,
             row.study,
             'MATCHED',
+            row.createdTime || '',
             row.valName,
-            row.scheduledTime || '',  // Add scheduled time
+            row.scheduledTime || '',
             row.appointmentStatus,
             row.subjectStatus,
             row.cancellationType,
@@ -1077,8 +1079,9 @@
             row.site,
             row.study,
             'UNMATCHED',
+            row.createdTime || '',
             '',
-            '',  // No scheduled time for unmatched
+            '',
             '',
             '',
             '',
