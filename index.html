@@ -474,6 +474,13 @@
                         </div>
                     </div>
                 </div>
+                            
+            <div style="text-align: center; margin-top: 16px;">
+                <button class="btn-primary" onclick="downloadMasterExport()" style="font-size: 16px; padding: 12px 24px;">
+                    📦 Export Master File (All Records)
+                </button>
+            </div>
+
 
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -1024,6 +1031,59 @@
             const headers = ['PATIENT', 'PHONE #', 'SITE', 'STUDY', 'Issue'];
             const rows = unmatchedData.map(row => [row.patient, row.phone, row.site, row.study, row.issue]);
             downloadCSV(headers, rows, 'Unmatched_Records.csv');
+        }
+
+                function downloadMasterExport() {
+            const headers = [
+                'PATIENT', 
+                'PHONE #', 
+                'SITE', 
+                'STUDY', 
+                'STATUS',
+                'Validation_Name', 
+                'Appointment Status', 
+                'Subject Status', 
+                'Appointment Cancellation Type',
+                'Issue/Notes'
+            ];
+            
+            const rows = [];
+            
+            matchedData.forEach(row => {
+                rows.push([
+                    row.patient,
+                    row.phone,
+                    row.site,
+                    row.study,
+                    'MATCHED',
+                    row.valName,
+                    row.appointmentStatus,
+                    row.subjectStatus,
+                    row.cancellationType,
+                    ''
+                ]);
+            });
+            
+            unmatchedData.forEach(row => {
+                rows.push([
+                    row.patient,
+                    row.phone,
+                    row.site,
+                    row.study,
+                    'UNMATCHED',
+                    '',
+                    '',
+                    '',
+                    '',
+                    row.issue
+                ]);
+            });
+            
+            const today = new Date().toISOString().split('T')[0];
+            const filename = `Master_Export_${today}.csv`;
+            
+            downloadCSV(headers, rows, filename);
+            showSuccess(`✓ Master export complete: ${matchedData.length} matched + ${unmatchedData.length} unmatched = ${rows.length} total records`);
         }
 
         function downloadCSV(headers, rows, filename) {
