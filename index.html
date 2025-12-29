@@ -965,7 +965,8 @@
         phone: row['Phone #'] || '',
         site: row['Site'] || '',
         study: row['Study'] || '',
-        createdTime: row['Created At'] || '',  // ✅ ADD THIS LINE
+        createdTime: row['Created At'] || '',
+        visitTime: row['Visit Time'] || '',  // ✅ ADD THIS LINE
         issue: 'No match found'
     });
 }
@@ -1073,21 +1074,21 @@
     });
     
     unmatchedData.forEach(row => {
-        rows.push([
-            row.patient,
-            row.phone,
-            row.site,
-            row.study,
-            'UNMATCHED',
-            row.createdTime || '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            row.issue
-        ]);
-    });
+    rows.push([
+        row.patient,
+        row.phone,
+        row.site,
+        row.study,
+        'UNMATCHED',
+        row.createdTime || '',
+        '',  // No validation name for unmatched
+        row.visitTime || '',  // ✅ CHANGE THIS - Use Grove visit time
+        '',
+        '',
+        '',
+        row.issue
+    ]);
+});
     
     const today = new Date().toISOString().split('T')[0];
     const filename = `Master_Export_${today}.csv`;
