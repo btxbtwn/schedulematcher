@@ -1218,7 +1218,7 @@
         }
 
         // Initialize app on load
-        // ============ NEW EXPORT FUNCTION ============
+// ============ ROBUST UPDATE EXPORT FUNCTION ============
 function updateTrackerStatus() {
     const callFile = document.getElementById('callFile').files[0];
     const valFile = document.getElementById('validationFile').files[0];
@@ -1229,16 +1229,30 @@ function updateTrackerStatus() {
     }
 
     Promise.all([callFile.text(), valFile.text()]).then(([callText, valText]) => {
-        const trackerData = parseCSV(callText);
+        // 1. Parse Tracker with Header Detection (Skip top rows)
+        const trackerData = parseTrackerCSV(callText);
+        // 2. Parse CRIO (Standard CSV)
         const crioData = parseCSV(valText);
         
+        // 3. Process Rows
         const updatedRows = trackerData.rows.map(tRow => {
-            const tPhone = (tRow['PHONE'] || tRow['Phone'] || '').replace(/\D/g, '').slice(-4);
+            // Clean Phone: Handle scientific notation (1.68e+10) or standard strings
+            let rawPhone = tRow['PHONE #'] || tRow['PHONE'] || tRow['Phone'] || '';
+            if (rawPhone.includes('e+')) {
+                rawPhone = Number(rawPhone).toLocaleString('fullwide', {useGrouping:false});
+            }
+            const tPhone = rawPhone.replace(/\D/g, '').slice(-4);
             const tSite = (tRow['SITE'] || tRow['Site'] || '').trim();
             const tStudy = (tRow['STUDY'] || tRow['Study'] || '').trim();
 
+            // Find Match
             const match = crioData.rows.find(cRow => {
-                const cPhone = (cRow['Mobile Phone'] || cRow['Home Phone'] || '').replace(/\D/g, '').slice(-4);
+                let cPhone = cRow['Mobile Phone'] || cRow['Home Phone'] || '';
+                if (cPhone.includes('e+')) {
+                    cPhone = Number(cPhone).toLocaleString('fullwide', {useGrouping:false});
+                }
+                cPhone = cPhone.replace(/\D/g, '').slice(-4);
+
                 if (!tPhone || !cPhone || tPhone !== cPhone) return false;
 
                 const cSiteName = (cRow['Site Name'] || '').toLowerCase();
@@ -1263,24 +1277,75 @@ function updateTrackerStatus() {
             return tRow;
         });
 
-        const headers = trackerData.headers;
-        ['Appointment Status', 'Subject Status', 'Appointment Cancellation Type'].forEach(col => {
-            if (!headers.includes(col)) headers.push(col);
-        });
-
-        const csvContent = [
-            headers.join(','),
-            ...updatedRows.map(row => headers.map(header => `"${(row[header] || '').replace(/"/g, '""')}"`).join(','))
-        ].join('\n');
-
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'Updated_Grove_Tracker.csv';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        downloadUpdatedCSV(trackerData, updatedRows);
     }).catch(err => alert('Error: ' + err.message));
+}
+
+// Special parser for Tracker file to skip top garbage rows
+function parseTrackerCSV(text) {
+    const lines = text.split(/\r\n|\n/);
+    // Find the real header row index (starts with DATE)
+    const headerIndex = lines.findIndex(l => l.toUpperCase().startsWith('DATE,TIME,PATIENT') || l.toUpperCase().includes(',PATIENT,PHONE'));
+    
+    if (headerIndex === -1) throw new Error('Could not find header row starting with DATE,TIME,PATIENT');
+
+    // Extract headers
+    const headers = lines[headerIndex].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    
+    // Parse rows below header
+    const rows = [];
+    for(let i = headerIndex + 1; i < lines.length; i++) {
+        if(!lines[i].trim()) continue;
+        
+        // Handle CSV split respecting quotes (basic regex)
+        // This regex handles commas inside quotes correctly
+        const values = [];
+        let inQuote = false;
+        let val = '';
+        for (let char of lines[i]) {
+            if (char === '"') inQuote = !inQuote;
+            else if (char === ',' && !inQuote) { values.push(val); val = ''; }
+            else val += char;
+        }
+        values.push(val); // Push last value
+        
+        const row = {};
+        headers.forEach((h, idx) => {
+             let v = values[idx] || '';
+             v = v.replace(/^"|"$/g, '').trim();
+             row[h] = v;
+        });
+        rows.push(row);
+    }
+    
+    return { headers, rows, headerRowIndex: headerIndex, allLines: lines };
+}
+
+function downloadUpdatedCSV(originalData, updatedRows) {
+    // Reconstruct file: Top Garbage + Header + Updated Rows
+    const topGarbage = originalData.allLines.slice(0, originalData.headerRowIndex).join('\n');
+    
+    // Add new column headers
+    const headers = [...originalData.headers];
+    const newCols = ['Appointment Status', 'Subject Status', 'Appointment Cancellation Type'];
+    newCols.forEach(col => { if (!headers.includes(col)) headers.push(col); });
+
+    // Build CSV Content
+    const csvRows = updatedRows.map(row => headers.map(h => {
+        let val = row[h] || '';
+        if (typeof val === 'string' && val.includes(',')) val = `"${val}"`;
+        return val;
+    }).join(',')).join('\n');
+
+    const finalContent = (topGarbage ? topGarbage + '\n' : '') + headers.join(',') + '\n' + csvRows;
+
+    const blob = new Blob([finalContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'Updated_Grove_Tracker.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
