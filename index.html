@@ -1218,7 +1218,7 @@
         }
 
         // Initialize app on load
-// ============ ROBUST UPDATE EXPORT FUNCTION ============
+// ============ FINAL EXPORT FUNCTION (Clean Headers) ============
 function updateTrackerStatus() {
     const callFile = document.getElementById('callFile').files[0];
     const valFile = document.getElementById('validationFile').files[0];
@@ -1229,14 +1229,14 @@ function updateTrackerStatus() {
     }
 
     Promise.all([callFile.text(), valFile.text()]).then(([callText, valText]) => {
-        // 1. Parse Tracker with Header Detection (Skip top rows)
+        // 1. Parse Tracker (Finds the 'DATE' row and ignores lines above it)
         const trackerData = parseTrackerCSV(callText);
-        // 2. Parse CRIO (Standard CSV)
+        // 2. Parse CRIO
         const crioData = parseCSV(valText);
         
         // 3. Process Rows
         const updatedRows = trackerData.rows.map(tRow => {
-            // Clean Phone: Handle scientific notation (1.68e+10) or standard strings
+            // Clean Phone (Handle scientific notation like 1.68e+10)
             let rawPhone = tRow['PHONE #'] || tRow['PHONE'] || tRow['Phone'] || '';
             if (rawPhone.includes('e+')) {
                 rawPhone = Number(rawPhone).toLocaleString('fullwide', {useGrouping:false});
@@ -1256,11 +1256,12 @@ function updateTrackerStatus() {
                 if (!tPhone || !cPhone || tPhone !== cPhone) return false;
 
                 const cSiteName = (cRow['Site Name'] || '').toLowerCase();
-                const mappedSite = siteMappings.find(m => m.grove === tSite)?.crio || tSite;
+                // Use existing mapping or fallback
+                const mappedSite = (typeof siteMappings !== 'undefined' ? siteMappings.find(m => m.grove === tSite)?.crio : tSite) || tSite;
                 if (!cSiteName.includes(mappedSite.toLowerCase())) return false;
 
                 const cStudyName = (cRow['Study Name'] || '').toLowerCase();
-                const mappedStudy = studyMappings.find(m => m.grove === tStudy)?.crio || tStudy;
+                const mappedStudy = (typeof studyMappings !== 'undefined' ? studyMappings.find(m => m.grove === tStudy)?.crio : tStudy) || tStudy;
                 if (!cStudyName.includes(mappedStudy.toLowerCase())) return false;
 
                 return true;
@@ -1281,24 +1282,22 @@ function updateTrackerStatus() {
     }).catch(err => alert('Error: ' + err.message));
 }
 
-// Special parser for Tracker file to skip top garbage rows
+// Helper: Finds the real header row and skips the top summary lines
 function parseTrackerCSV(text) {
     const lines = text.split(/\r\n|\n/);
-    // Find the real header row index (starts with DATE)
+    // Look for the row that starts with DATE
     const headerIndex = lines.findIndex(l => l.toUpperCase().startsWith('DATE,TIME,PATIENT') || l.toUpperCase().includes(',PATIENT,PHONE'));
     
     if (headerIndex === -1) throw new Error('Could not find header row starting with DATE,TIME,PATIENT');
 
-    // Extract headers
+    // Extract headers from that line
     const headers = lines[headerIndex].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
     
-    // Parse rows below header
     const rows = [];
     for(let i = headerIndex + 1; i < lines.length; i++) {
         if(!lines[i].trim()) continue;
         
-        // Handle CSV split respecting quotes (basic regex)
-        // This regex handles commas inside quotes correctly
+        // Handle CSV split ensuring commas in quotes are preserved
         const values = [];
         let inQuote = false;
         let val = '';
@@ -1307,7 +1306,7 @@ function parseTrackerCSV(text) {
             else if (char === ',' && !inQuote) { values.push(val); val = ''; }
             else val += char;
         }
-        values.push(val); // Push last value
+        values.push(val);
         
         const row = {};
         headers.forEach((h, idx) => {
@@ -1317,27 +1316,30 @@ function parseTrackerCSV(text) {
         });
         rows.push(row);
     }
-    
-    return { headers, rows, headerRowIndex: headerIndex, allLines: lines };
+    return { headers, rows };
 }
 
+// Helper: Exports headers first, then data
 function downloadUpdatedCSV(originalData, updatedRows) {
-    // Reconstruct file: Top Garbage + Header + Updated Rows
-    const topGarbage = originalData.allLines.slice(0, originalData.headerRowIndex).join('\n');
-    
-    // Add new column headers
     const headers = [...originalData.headers];
-    const newCols = ['Appointment Status', 'Subject Status', 'Appointment Cancellation Type'];
-    newCols.forEach(col => { if (!headers.includes(col)) headers.push(col); });
+    // Add new columns if they don't exist
+    ['Appointment Status', 'Subject Status', 'Appointment Cancellation Type'].forEach(col => {
+        if (!headers.includes(col)) headers.push(col);
+    });
 
-    // Build CSV Content
+    // Create the CSV content
     const csvRows = updatedRows.map(row => headers.map(h => {
         let val = row[h] || '';
-        if (typeof val === 'string' && val.includes(',')) val = `"${val}"`;
+        // Escape quotes and wrap in quotes if necessary
+        if (typeof val === 'string') {
+            val = val.replace(/"/g, '""');
+            if (val.includes(',') || val.includes('\n')) val = `"${val}"`;
+        }
         return val;
     }).join(',')).join('\n');
 
-    const finalContent = (topGarbage ? topGarbage + '\n' : '') + headers.join(',') + '\n' + csvRows;
+    // Header Row is now truly the first row
+    const finalContent = headers.join(',') + '\n' + csvRows;
 
     const blob = new Blob([finalContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
