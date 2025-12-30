@@ -444,6 +444,7 @@
                 <div class="button-group">
                     <button class="btn-primary" id="runBtn" onclick="runMatching()" disabled>Run Matching</button>
                     <button class="btn-secondary" onclick="resetForm()">Clear</button>
+                    <button class="btn-primary" style="background-color: #e91e63; margin-left: 10px;" onclick="updateTrackerStatus()">Update Tracker Statuses</button>
                 </div>
             </div>
 
@@ -1217,6 +1218,70 @@
         }
 
         // Initialize app on load
+        // ============ NEW EXPORT FUNCTION ============
+function updateTrackerStatus() {
+    const callFile = document.getElementById('callFile').files[0];
+    const valFile = document.getElementById('validationFile').files[0];
+
+    if (!callFile || !valFile) {
+        alert('Please upload both files first.');
+        return;
+    }
+
+    Promise.all([callFile.text(), valFile.text()]).then(([callText, valText]) => {
+        const trackerData = parseCSV(callText);
+        const crioData = parseCSV(valText);
+        
+        const updatedRows = trackerData.rows.map(tRow => {
+            const tPhone = (tRow['PHONE'] || tRow['Phone'] || '').replace(/\D/g, '').slice(-4);
+            const tSite = (tRow['SITE'] || tRow['Site'] || '').trim();
+            const tStudy = (tRow['STUDY'] || tRow['Study'] || '').trim();
+
+            const match = crioData.rows.find(cRow => {
+                const cPhone = (cRow['Mobile Phone'] || cRow['Home Phone'] || '').replace(/\D/g, '').slice(-4);
+                if (!tPhone || !cPhone || tPhone !== cPhone) return false;
+
+                const cSiteName = (cRow['Site Name'] || '').toLowerCase();
+                const mappedSite = siteMappings.find(m => m.grove === tSite)?.crio || tSite;
+                if (!cSiteName.includes(mappedSite.toLowerCase())) return false;
+
+                const cStudyName = (cRow['Study Name'] || '').toLowerCase();
+                const mappedStudy = studyMappings.find(m => m.grove === tStudy)?.crio || tStudy;
+                if (!cStudyName.includes(mappedStudy.toLowerCase())) return false;
+
+                return true;
+            });
+
+            if (match) {
+                return {
+                    ...tRow,
+                    'Appointment Status': match['Appointment Status'] || '',
+                    'Subject Status': match['Subject Status'] || '',
+                    'Appointment Cancellation Type': match['Appointment Cancellation Type'] || ''
+                };
+            }
+            return tRow;
+        });
+
+        const headers = trackerData.headers;
+        ['Appointment Status', 'Subject Status', 'Appointment Cancellation Type'].forEach(col => {
+            if (!headers.includes(col)) headers.push(col);
+        });
+
+        const csvContent = [
+            headers.join(','),
+            ...updatedRows.map(row => headers.map(header => `"${(row[header] || '').replace(/"/g, '""')}"`).join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'Updated_Grove_Tracker.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }).catch(err => alert('Error: ' + err.message));
+}
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
