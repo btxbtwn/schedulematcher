@@ -1228,8 +1228,8 @@ function updateTrackerStatus() {
         return;
     }
 
-    // List of sites that are in Eastern Time
-    const easternSites = ['ATL', 'CLT', 'CHS', 'BET', 'VIE'];
+    // List of sites in Central Time (Subtract 1 hour from CRIO's Eastern Time)
+    const centralSites = ['NO', 'DAL', 'TUL', 'BR', 'NAS', 'LOU', 'STL', 'IND', 'CIN', 'SPR'];
 
     Promise.all([callFile.text(), valFile.text()]).then(([callText, valText]) => {
         const trackerData = parseTrackerCSV(callText);
@@ -1269,7 +1269,7 @@ function updateTrackerStatus() {
                 let newTime = tRow['TIME'];
 
                 if (schedTime && schedTime.includes(' ')) {
-                    const parts = schedTime.split(' '); // [YYYY-MM-DD, HH:MM:SS]
+                    const parts = schedTime.split(' ');
                     const dateParts = parts[0].split('-');
                     const timeParts = parts[1].split(':');
 
@@ -1277,9 +1277,9 @@ function updateTrackerStatus() {
                         let hours = parseInt(timeParts[0]);
                         let minutes = timeParts[1];
 
-                        // ONLY add an hour if it's an Eastern site
-                        if (easternSites.some(s => tSite.toUpperCase().includes(s))) {
-                            hours += 1;
+                        // SUBTRACT an hour if it's a Central site
+                        if (centralSites.some(s => tSite.toUpperCase().includes(s))) {
+                            hours -= 1;
                         }
 
                         // Reformat Date to M/D/YYYY
@@ -1289,6 +1289,10 @@ function updateTrackerStatus() {
                         let ampm = hours >= 12 ? 'PM' : 'AM';
                         if (hours > 12) hours -= 12;
                         if (hours === 0) hours = 12;
+                        if (hours < 0) { // Handle cases where 12 AM Eastern becomes 11 PM Central
+                            hours = 11;
+                            ampm = 'PM';
+                        }
                         
                         newTime = `${hours}:${minutes} ${ampm}`;
                     }
