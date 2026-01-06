@@ -1260,25 +1260,10 @@ function updateTrackerStatus() {
                 return true;
             });
 
+            // REVERTED: Now only updates the 3 status columns, keeps original DATE and TIME
             if (match) {
-                // Split CRIO "Scheduled Time" (Format: 2025-12-28 14:00:00)
-                const schedTime = match['Scheduled Time'] || '';
-                let newDate = tRow['DATE'];
-                let newTime = tRow['TIME'];
-
-                if (schedTime.includes(' ')) {
-                    const parts = schedTime.split(' ');
-                    const dateObj = new Date(parts[0]);
-                    // Reformat date to MM/DD/YYYY
-                    newDate = (dateObj.getMonth() + 1) + '/' + dateObj.getDate() + '/' + dateObj.getFullYear();
-                    // Keep the time as is or format to 12h
-                    newTime = parts[1];
-                }
-
                 return {
                     ...tRow,
-                    'DATE': newDate,
-                    'TIME': newTime,
                     'Appointment Status': match['Appointment Status'] || '',
                     'Subject Status': match['Subject Status'] || '',
                     'Appointment Cancellation Type': match['Appointment Cancellation Type'] || ''
