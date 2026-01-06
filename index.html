@@ -1228,7 +1228,6 @@ function updateTrackerStatus() {
         return;
     }
 
-    // List of sites in Central Time (Subtract 1 hour from CRIO's Eastern Time)
     const centralSites = ['NO', 'DAL', 'TUL', 'BR', 'NAS', 'LOU', 'STL', 'IND', 'CIN', 'SPR'];
 
     Promise.all([callFile.text(), valFile.text()]).then(([callText, valText]) => {
@@ -1236,31 +1235,29 @@ function updateTrackerStatus() {
         const crioData = parseCSV(valText);
         
         const updatedRows = trackerData.rows.map(tRow => {
-            let rawPhone = tRow['PHONE #'] || tRow['PHONE'] || tRow['Phone'] || '';
-            if (rawPhone.includes('e+')) {
-                rawPhone = Number(rawPhone).toLocaleString('fullwide', {useGrouping:false});
-            }
+            const tPatient = (tRow['PATIENT'] || '').trim().toLowerCase();
+            const rawPhone = tRow['PHONE #'] || tRow['PHONE'] || '';
             const tPhone = rawPhone.replace(/\D/g, '').slice(-4);
-            const tSite = (tRow['SITE'] || tRow['Site'] || '').trim();
-            const tStudy = (tRow['STUDY'] || tRow['Study'] || '').trim();
+            const tSite = (tRow['SITE'] || '').trim().toUpperCase();
 
+            // STRICT MATCHING LOGIC
             const match = crioData.rows.find(cRow => {
-                let cPhone = cRow['Mobile Phone'] || cRow['Home Phone'] || '';
-                if (cPhone.includes('e+')) {
-                    cPhone = Number(cPhone).toLocaleString('fullwide', {useGrouping:false});
-                }
-                cPhone = cPhone.replace(/\D/g, '').slice(-4);
-                if (!tPhone || !cPhone || tPhone !== cPhone) return false;
+                const cPhone = (cRow['Mobile Phone'] || cRow['Home Phone'] || '').replace(/\D/g, '').slice(-4);
+                const cPatient = (cRow['Subject Full Name'] || cRow['Full Name'] || '').trim().toLowerCase();
+                const cSite = (cRow['Site Name'] || '').toUpperCase();
 
-                const cSiteName = (cRow['Site Name'] || '').toLowerCase();
-                const mappedSite = (typeof siteMappings !== 'undefined' ? siteMappings.find(m => m.grove === tSite)?.crio : tSite) || tSite;
-                if (!cSiteName.includes(mappedSite.toLowerCase())) return false;
+                // 1. Phone last 4 MUST match
+                if (!tPhone || tPhone !== cPhone) return false;
 
-                const cStudyName = (cRow['Study Name'] || '').toLowerCase();
-                const mappedStudy = (typeof studyMappings !== 'undefined' ? studyMappings.find(m => m.grove === tStudy)?.crio : tStudy) || tStudy;
-                if (!cStudyName.includes(mappedStudy.toLowerCase())) return false;
+                // 2. Site MUST match (e.g., Tracker 'ATL' must be in CRIO 'ATL - Psych')
+                if (!cSite.includes(tSite)) return false;
 
-                return true;
+                // 3. Name check (Optional but recommended for safety)
+                // If the name is completely different, it's probably the wrong person with the same phone digits
+                const tNameParts = tPatient.split(' ');
+                const matchesName = tNameParts.some(part => part.length > 2 && cPatient.includes(part));
+                
+                return matchesName;
             });
 
             if (match) {
@@ -1276,24 +1273,13 @@ function updateTrackerStatus() {
                     if (dateParts.length === 3 && timeParts.length >= 2) {
                         let hours = parseInt(timeParts[0]);
                         let minutes = timeParts[1];
+                        if (centralSites.some(s => tSite.includes(s))) hours -= 1;
 
-                        // SUBTRACT an hour if it's a Central site
-                        if (centralSites.some(s => tSite.toUpperCase().includes(s))) {
-                            hours -= 1;
-                        }
-
-                        // Reformat Date to M/D/YYYY
                         newDate = `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}/${dateParts[0]}`;
-                        
-                        // Format Time to 12h AM/PM
                         let ampm = hours >= 12 ? 'PM' : 'AM';
                         if (hours > 12) hours -= 12;
                         if (hours === 0) hours = 12;
-                        if (hours < 0) { // Handle cases where 12 AM Eastern becomes 11 PM Central
-                            hours = 11;
-                            ampm = 'PM';
-                        }
-                        
+                        if (hours < 0) { hours = 11; ampm = 'PM'; }
                         newTime = `${hours}:${minutes} ${ampm}`;
                     }
                 }
