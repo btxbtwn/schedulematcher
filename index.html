@@ -1228,6 +1228,9 @@ function updateTrackerStatus() {
         return;
     }
 
+    // List of sites that are in Eastern Time (Add 1 hour to CRIO's Central Time)
+    const easternSites = ['ATL', 'CLT', 'CHS', 'BET', 'VIE'];
+
     Promise.all([callFile.text(), valFile.text()]).then(([callText, valText]) => {
         const trackerData = parseTrackerCSV(callText);
         const crioData = parseCSV(valText);
@@ -1260,10 +1263,36 @@ function updateTrackerStatus() {
                 return true;
             });
 
-            // REVERTED: Now only updates the 3 status columns, keeps original DATE and TIME
             if (match) {
+                const schedTime = match['Scheduled Time'] || '';
+                let newDate = tRow['DATE'];
+                let newTime = tRow['TIME'];
+
+                if (schedTime.includes(' ')) {
+                    // Create a date object from CRIO (Central)
+                    let dateObj = new Date(schedTime.replace(' ', 'T'));
+                    
+                    // If the site is Eastern, add 1 hour
+                    if (easternSites.some(s => tSite.toUpperCase().includes(s))) {
+                        dateObj.setHours(dateObj.getHours() + 1);
+                    }
+
+                    // Format Date to M/D/YYYY
+                    newDate = (dateObj.getMonth() + 1) + '/' + dateObj.getDate() + '/' + dateObj.getFullYear();
+                    
+                    // Format Time to 12h AM/PM
+                    let hours = dateObj.getHours();
+                    let minutes = dateObj.getMinutes().toString().padStart(2, '0');
+                    let ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12;
+                    newTime = `${hours}:${minutes} ${ampm}`;
+                }
+
                 return {
                     ...tRow,
+                    'DATE': newDate,
+                    'TIME': newTime,
                     'Appointment Status': match['Appointment Status'] || '',
                     'Subject Status': match['Subject Status'] || '',
                     'Appointment Cancellation Type': match['Appointment Cancellation Type'] || ''
