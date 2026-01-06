@@ -1228,7 +1228,6 @@ function updateTrackerStatus() {
         return;
     }
 
-    // List of sites that are in Eastern Time (Add 1 hour to CRIO's Central Time)
     const easternSites = ['ATL', 'CLT', 'CHS', 'BET', 'VIE'];
 
     Promise.all([callFile.text(), valFile.text()]).then(([callText, valText]) => {
@@ -1253,11 +1252,11 @@ function updateTrackerStatus() {
                 if (!tPhone || !cPhone || tPhone !== cPhone) return false;
 
                 const cSiteName = (cRow['Site Name'] || '').toLowerCase();
-                const mappedSite = siteMappings.find(m => m.grove === tSite)?.crio || tSite;
+                const mappedSite = (typeof siteMappings !== 'undefined' ? siteMappings.find(m => m.grove === tSite)?.crio : tSite) || tSite;
                 if (!cSiteName.includes(mappedSite.toLowerCase())) return false;
 
                 const cStudyName = (cRow['Study Name'] || '').toLowerCase();
-                const mappedStudy = studyMappings.find(m => m.grove === tStudy)?.crio || tStudy;
+                const mappedStudy = (typeof studyMappings !== 'undefined' ? studyMappings.find(m => m.grove === tStudy)?.crio : tStudy) || tStudy;
                 if (!cStudyName.includes(mappedStudy.toLowerCase())) return false;
 
                 return true;
@@ -1268,25 +1267,24 @@ function updateTrackerStatus() {
                 let newDate = tRow['DATE'];
                 let newTime = tRow['TIME'];
 
-                if (schedTime.includes(' ')) {
-                    // Create a date object from CRIO (Central)
+                // SAFETY CHECK: Only process if CRIO actually has a time
+                if (schedTime && schedTime.includes(' ')) {
                     let dateObj = new Date(schedTime.replace(' ', 'T'));
                     
-                    // If the site is Eastern, add 1 hour
-                    if (easternSites.some(s => tSite.toUpperCase().includes(s))) {
-                        dateObj.setHours(dateObj.getHours() + 1);
-                    }
+                    if (!isNaN(dateObj.getTime())) {
+                        if (easternSites.some(s => tSite.toUpperCase().includes(s))) {
+                            dateObj.setHours(dateObj.getHours() + 1);
+                        }
 
-                    // Format Date to M/D/YYYY
-                    newDate = (dateObj.getMonth() + 1) + '/' + dateObj.getDate() + '/' + dateObj.getFullYear();
-                    
-                    // Format Time to 12h AM/PM
-                    let hours = dateObj.getHours();
-                    let minutes = dateObj.getMinutes().toString().padStart(2, '0');
-                    let ampm = hours >= 12 ? 'PM' : 'AM';
-                    hours = hours % 12;
-                    hours = hours ? hours : 12;
-                    newTime = `${hours}:${minutes} ${ampm}`;
+                        newDate = (dateObj.getMonth() + 1) + '/' + dateObj.getDate() + '/' + dateObj.getFullYear();
+                        
+                        let hours = dateObj.getHours();
+                        let minutes = dateObj.getMinutes().toString().padStart(2, '0');
+                        let ampm = hours >= 12 ? 'PM' : 'AM';
+                        hours = hours % 12;
+                        hours = hours ? hours : 12;
+                        newTime = `${hours}:${minutes} ${ampm}`;
+                    }
                 }
 
                 return {
