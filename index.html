@@ -1229,14 +1229,10 @@ function updateTrackerStatus() {
     }
 
     Promise.all([callFile.text(), valFile.text()]).then(([callText, valText]) => {
-        // 1. Parse Tracker (Finds the 'DATE' row and ignores lines above it)
         const trackerData = parseTrackerCSV(callText);
-        // 2. Parse CRIO
         const crioData = parseCSV(valText);
         
-        // 3. Process Rows
         const updatedRows = trackerData.rows.map(tRow => {
-            // Clean Phone (Handle scientific notation like 1.68e+10)
             let rawPhone = tRow['PHONE #'] || tRow['PHONE'] || tRow['Phone'] || '';
             if (rawPhone.includes('e+')) {
                 rawPhone = Number(rawPhone).toLocaleString('fullwide', {useGrouping:false});
@@ -1245,31 +1241,44 @@ function updateTrackerStatus() {
             const tSite = (tRow['SITE'] || tRow['Site'] || '').trim();
             const tStudy = (tRow['STUDY'] || tRow['Study'] || '').trim();
 
-            // Find Match
             const match = crioData.rows.find(cRow => {
                 let cPhone = cRow['Mobile Phone'] || cRow['Home Phone'] || '';
                 if (cPhone.includes('e+')) {
                     cPhone = Number(cPhone).toLocaleString('fullwide', {useGrouping:false});
                 }
                 cPhone = cPhone.replace(/\D/g, '').slice(-4);
-
                 if (!tPhone || !cPhone || tPhone !== cPhone) return false;
 
                 const cSiteName = (cRow['Site Name'] || '').toLowerCase();
-                // Use existing mapping or fallback
-                const mappedSite = (typeof siteMappings !== 'undefined' ? siteMappings.find(m => m.grove === tSite)?.crio : tSite) || tSite;
+                const mappedSite = siteMappings.find(m => m.grove === tSite)?.crio || tSite;
                 if (!cSiteName.includes(mappedSite.toLowerCase())) return false;
 
                 const cStudyName = (cRow['Study Name'] || '').toLowerCase();
-                const mappedStudy = (typeof studyMappings !== 'undefined' ? studyMappings.find(m => m.grove === tStudy)?.crio : tStudy) || tStudy;
+                const mappedStudy = studyMappings.find(m => m.grove === tStudy)?.crio || tStudy;
                 if (!cStudyName.includes(mappedStudy.toLowerCase())) return false;
 
                 return true;
             });
 
             if (match) {
+                // Split CRIO "Scheduled Time" (Format: 2025-12-28 14:00:00)
+                const schedTime = match['Scheduled Time'] || '';
+                let newDate = tRow['DATE'];
+                let newTime = tRow['TIME'];
+
+                if (schedTime.includes(' ')) {
+                    const parts = schedTime.split(' ');
+                    const dateObj = new Date(parts[0]);
+                    // Reformat date to MM/DD/YYYY
+                    newDate = (dateObj.getMonth() + 1) + '/' + dateObj.getDate() + '/' + dateObj.getFullYear();
+                    // Keep the time as is or format to 12h
+                    newTime = parts[1];
+                }
+
                 return {
                     ...tRow,
+                    'DATE': newDate,
+                    'TIME': newTime,
                     'Appointment Status': match['Appointment Status'] || '',
                     'Subject Status': match['Subject Status'] || '',
                     'Appointment Cancellation Type': match['Appointment Cancellation Type'] || ''
