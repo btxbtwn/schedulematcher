@@ -1238,9 +1238,9 @@ function updateTrackerStatus() {
             const tPatient = (tRow['PATIENT'] || '').trim().toLowerCase();
             const rawPhone = tRow['PHONE #'] || tRow['PHONE'] || '';
             const tPhone = rawPhone.replace(/\D/g, '').slice(-4);
-            const tSite = (tRow['SITE'] || '').trim().toUpperCase();
+            // Get first 3 letters of site (e.g. "CHS", "ATL")
+            const tSiteCode = (tRow['SITE'] || '').trim().toUpperCase().substring(0, 3);
 
-            // STRICT MATCHING LOGIC
             const match = crioData.rows.find(cRow => {
                 const cPhone = (cRow['Mobile Phone'] || cRow['Home Phone'] || '').replace(/\D/g, '').slice(-4);
                 const cPatient = (cRow['Subject Full Name'] || cRow['Full Name'] || '').trim().toLowerCase();
@@ -1249,15 +1249,16 @@ function updateTrackerStatus() {
                 // 1. Phone last 4 MUST match
                 if (!tPhone || tPhone !== cPhone) return false;
 
-                // 2. Site MUST match (e.g., Tracker 'ATL' must be in CRIO 'ATL - Psych')
-                if (!cSite.includes(tSite)) return false;
+                // 2. Site Code check (Matches CHS in CHS - General Medicine)
+                if (tSiteCode && !cSite.startsWith(tSiteCode)) return false;
 
-                // 3. Name check (Optional but recommended for safety)
-                // If the name is completely different, it's probably the wrong person with the same phone digits
-                const tNameParts = tPatient.split(' ');
-                const matchesName = tNameParts.some(part => part.length > 2 && cPatient.includes(part));
+                // 3. Smart Name Match: Check if the tracker name contains parts of the CRIO name
+                const cParts = cPatient.split(' ').filter(p => p.length > 2);
+                const tParts = tPatient.split(' ').filter(p => p.length > 2);
                 
-                return matchesName;
+                // If at least 2 name parts match (e.g. "Julia" and "Grant")
+                const commonParts = cParts.filter(part => tPatient.includes(part));
+                return commonParts.length >= 2 || (cParts.length === 1 && tPatient.includes(cParts[0]));
             });
 
             if (match) {
@@ -1273,7 +1274,7 @@ function updateTrackerStatus() {
                     if (dateParts.length === 3 && timeParts.length >= 2) {
                         let hours = parseInt(timeParts[0]);
                         let minutes = timeParts[1];
-                        if (centralSites.some(s => tSite.includes(s))) hours -= 1;
+                        if (centralSites.some(s => tSiteCode.includes(s))) hours -= 1;
 
                         newDate = `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}/${dateParts[0]}`;
                         let ampm = hours >= 12 ? 'PM' : 'AM';
