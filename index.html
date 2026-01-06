@@ -1228,6 +1228,7 @@ function updateTrackerStatus() {
         return;
     }
 
+    // List of sites that are in Eastern Time
     const easternSites = ['ATL', 'CLT', 'CHS', 'BET', 'VIE'];
 
     Promise.all([callFile.text(), valFile.text()]).then(([callText, valText]) => {
@@ -1267,22 +1268,28 @@ function updateTrackerStatus() {
                 let newDate = tRow['DATE'];
                 let newTime = tRow['TIME'];
 
-                // SAFETY CHECK: Only process if CRIO actually has a time
                 if (schedTime && schedTime.includes(' ')) {
-                    let dateObj = new Date(schedTime.replace(' ', 'T'));
-                    
-                    if (!isNaN(dateObj.getTime())) {
+                    const parts = schedTime.split(' '); // [YYYY-MM-DD, HH:MM:SS]
+                    const dateParts = parts[0].split('-');
+                    const timeParts = parts[1].split(':');
+
+                    if (dateParts.length === 3 && timeParts.length >= 2) {
+                        let hours = parseInt(timeParts[0]);
+                        let minutes = timeParts[1];
+
+                        // ONLY add an hour if it's an Eastern site
                         if (easternSites.some(s => tSite.toUpperCase().includes(s))) {
-                            dateObj.setHours(dateObj.getHours() + 1);
+                            hours += 1;
                         }
 
-                        newDate = (dateObj.getMonth() + 1) + '/' + dateObj.getDate() + '/' + dateObj.getFullYear();
+                        // Reformat Date to M/D/YYYY
+                        newDate = `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}/${dateParts[0]}`;
                         
-                        let hours = dateObj.getHours();
-                        let minutes = dateObj.getMinutes().toString().padStart(2, '0');
+                        // Format Time to 12h AM/PM
                         let ampm = hours >= 12 ? 'PM' : 'AM';
-                        hours = hours % 12;
-                        hours = hours ? hours : 12;
+                        if (hours > 12) hours -= 12;
+                        if (hours === 0) hours = 12;
+                        
                         newTime = `${hours}:${minutes} ${ampm}`;
                     }
                 }
