@@ -1238,15 +1238,20 @@ function updateTrackerStatus() {
             const tPatient = (tRow['PATIENT'] || '').trim().toLowerCase();
             const rawPhone = tRow['PHONE #'] || tRow['PHONE'] || '';
             const tPhone = rawPhone.replace(/\D/g, '').slice(-4);
-            const tSiteCode = (tRow['SITE'] || '').trim().toUpperCase().substring(0, 3);
+            
+            // Clean Site Code: Extract letters and ignore the 'L' in GUL if needed
+            let tSiteCode = (tRow['SITE'] || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+            if (tSiteCode.startsWith('GUL')) tSiteCode = 'GU'; // Special case for Gulfport
+            else tSiteCode = tSiteCode.substring(0, 3);
 
-            // 1. Find ALL potential matches first
             const allMatches = crioData.rows.filter(cRow => {
                 const cPhone = (cRow['Mobile Phone'] || cRow['Home Phone'] || '').replace(/\D/g, '').slice(-4);
                 const cPatient = (cRow['Subject Full Name'] || cRow['Full Name'] || '').trim().toLowerCase();
-                const cSite = (cRow['Site Name'] || '').toUpperCase();
+                const cSite = (cRow['Site Name'] || '').toUpperCase().replace(/[^A-Z]/g, '');
 
                 if (!tPhone || tPhone !== cPhone) return false;
+                
+                // Site match: Tracker code (GU) must be at the start of CRIO site (GU)
                 if (tSiteCode && !cSite.startsWith(tSiteCode)) return false;
 
                 const cParts = cPatient.split(' ').filter(p => p.length > 2);
@@ -1254,7 +1259,6 @@ function updateTrackerStatus() {
                 return commonParts.length >= 2 || (cParts.length === 1 && tPatient.includes(cParts[0]));
             });
 
-            // 2. PRIORITY: Pick 'Active' over 'Cancelled' or 'Deleted'
             const match = allMatches.find(m => m['Appointment Status'] === 'Active') || allMatches[0];
 
             if (match) {
