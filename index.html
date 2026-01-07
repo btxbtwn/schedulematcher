@@ -1238,28 +1238,24 @@ function updateTrackerStatus() {
             const tPatient = (tRow['PATIENT'] || '').trim().toLowerCase();
             const rawPhone = tRow['PHONE #'] || tRow['PHONE'] || '';
             const tPhone = rawPhone.replace(/\D/g, '').slice(-4);
-            // Get first 3 letters of site (e.g. "CHS", "ATL")
             const tSiteCode = (tRow['SITE'] || '').trim().toUpperCase().substring(0, 3);
 
-            const match = crioData.rows.find(cRow => {
+            // 1. Find ALL potential matches first
+            const allMatches = crioData.rows.filter(cRow => {
                 const cPhone = (cRow['Mobile Phone'] || cRow['Home Phone'] || '').replace(/\D/g, '').slice(-4);
                 const cPatient = (cRow['Subject Full Name'] || cRow['Full Name'] || '').trim().toLowerCase();
                 const cSite = (cRow['Site Name'] || '').toUpperCase();
 
-                // 1. Phone last 4 MUST match
                 if (!tPhone || tPhone !== cPhone) return false;
-
-                // 2. Site Code check (Matches CHS in CHS - General Medicine)
                 if (tSiteCode && !cSite.startsWith(tSiteCode)) return false;
 
-                // 3. Smart Name Match: Check if the tracker name contains parts of the CRIO name
                 const cParts = cPatient.split(' ').filter(p => p.length > 2);
-                const tParts = tPatient.split(' ').filter(p => p.length > 2);
-                
-                // If at least 2 name parts match (e.g. "Julia" and "Grant")
                 const commonParts = cParts.filter(part => tPatient.includes(part));
                 return commonParts.length >= 2 || (cParts.length === 1 && tPatient.includes(cParts[0]));
             });
+
+            // 2. PRIORITY: Pick 'Active' over 'Cancelled' or 'Deleted'
+            const match = allMatches.find(m => m['Appointment Status'] === 'Active') || allMatches[0];
 
             if (match) {
                 const schedTime = match['Scheduled Time'] || '';
@@ -1300,7 +1296,7 @@ function updateTrackerStatus() {
         downloadUpdatedCSV(trackerData, updatedRows);
     }).catch(err => alert('Error: ' + err.message));
 }
-
+        
 // Helper: Finds the real header row and skips the top summary lines
 function parseTrackerCSV(text) {
     const lines = text.split(/\r\n|\n/);
