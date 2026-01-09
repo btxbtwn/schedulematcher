@@ -1243,7 +1243,6 @@ function updateTrackerStatus() {
             if (tSiteCode.startsWith('GUL')) tSiteCode = 'GU';
             else tSiteCode = tSiteCode.substring(0, 3);
 
-            // 1. Get all matches for this patient
             let allMatches = crioData.rows.filter(cRow => {
                 const cPhone = (cRow['Mobile Phone'] || cRow['Home Phone'] || '').replace(/\D/g, '').slice(-4);
                 const cPatient = (cRow['Subject Full Name'] || cRow['Full Name'] || '').trim().toLowerCase();
@@ -1259,18 +1258,17 @@ function updateTrackerStatus() {
 
             if (allMatches.length === 0) return tRow;
 
-            // 2. SORT by date (earliest first)
+            // Sort Earliest to Latest
             allMatches.sort((a, b) => {
                 const dateA = new Date((a['Scheduled Time'] || '9999-12-31').replace(' ', 'T'));
                 const dateB = new Date((b['Scheduled Time'] || '9999-12-31').replace(' ', 'T'));
                 return dateA - dateB;
             });
 
-            // 3. SELECTION LOGIC
-            // Look for the EARLIEST appointment that is Active or was the Screening visit
+            // Find the first Screening/Enrollment visit
             const match = allMatches.find(m => {
-                const subStatus = (m['Subject Status'] || '').toLowerCase();
-                return subStatus.includes('screening') || subStatus.includes('enrolled');
+                const s = (m['Subject Status'] || '').toLowerCase();
+                return s.includes('screening') || s.includes('enrolled');
             }) || allMatches.find(m => m['Appointment Status'] === 'Active') || allMatches[0];
 
             if (match) {
