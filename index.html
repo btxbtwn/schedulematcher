@@ -1239,16 +1239,12 @@ function updateTrackerStatus() {
             const rawPhone = tRow['PHONE #'] || tRow['PHONE'] || '';
             const tPhone = rawPhone.replace(/\D/g, '').slice(-4);
             
-            // Site matching logic (including GUL fix)
             let tSiteCode = (tRow['SITE'] || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
             if (tSiteCode.startsWith('GUL')) tSiteCode = 'GU';
             else tSiteCode = tSiteCode.substring(0, 3);
 
-            // FREEZE LOGIC: Check if patient is already enrolled or screening
-            const currentStatus = (tRow['Subject Status'] || '').toLowerCase();
-            const isFrozen = currentStatus.includes('enrolled') || currentStatus.includes('screening');
-
-            const allMatches = crioData.rows.filter(cRow => {
+            // 1. Get all matches for this patient
+            let allMatches = crioData.rows.filter(cRow => {
                 const cPhone = (cRow['Mobile Phone'] || cRow['Home Phone'] || '').replace(/\D/g, '').slice(-4);
                 const cPatient = (cRow['Subject Full Name'] || cRow['Full Name'] || '').trim().toLowerCase();
                 const cSite = (cRow['Site Name'] || '').toUpperCase().replace(/[^A-Z]/g, '');
@@ -1261,32 +1257,43 @@ function updateTrackerStatus() {
                 return commonParts.length >= 2 || (cParts.length === 1 && tPatient.includes(cParts[0]));
             });
 
-            const match = allMatches.find(m => m['Appointment Status'] === 'Active') || allMatches[0];
+            if (allMatches.length === 0) return tRow;
+
+            // 2. SORT by date (earliest first)
+            allMatches.sort((a, b) => {
+                const dateA = new Date((a['Scheduled Time'] || '9999-12-31').replace(' ', 'T'));
+                const dateB = new Date((b['Scheduled Time'] || '9999-12-31').replace(' ', 'T'));
+                return dateA - dateB;
+            });
+
+            // 3. SELECTION LOGIC
+            // Look for the EARLIEST appointment that is Active or was the Screening visit
+            const match = allMatches.find(m => {
+                const subStatus = (m['Subject Status'] || '').toLowerCase();
+                return subStatus.includes('screening') || subStatus.includes('enrolled');
+            }) || allMatches.find(m => m['Appointment Status'] === 'Active') || allMatches[0];
 
             if (match) {
+                const schedTime = match['Scheduled Time'] || '';
                 let newDate = tRow['DATE'];
                 let newTime = tRow['TIME'];
 
-                // ONLY update Date/Time if NOT frozen
-                if (!isFrozen) {
-                    const schedTime = match['Scheduled Time'] || '';
-                    if (schedTime && schedTime.includes(' ')) {
-                        const parts = schedTime.split(' ');
-                        const dateParts = parts[0].split('-');
-                        const timeParts = parts[1].split(':');
+                if (schedTime && schedTime.includes(' ')) {
+                    const parts = schedTime.split(' ');
+                    const dateParts = parts[0].split('-');
+                    const timeParts = parts[1].split(':');
 
-                        if (dateParts.length === 3 && timeParts.length >= 2) {
-                            let hours = parseInt(timeParts[0]);
-                            let minutes = timeParts[1];
-                            if (centralSites.some(s => tSiteCode.includes(s))) hours -= 1;
+                    if (dateParts.length === 3 && timeParts.length >= 2) {
+                        let hours = parseInt(timeParts[0]);
+                        let minutes = timeParts[1];
+                        if (centralSites.some(s => tSiteCode.includes(s))) hours -= 1;
 
-                            newDate = `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}/${dateParts[0]}`;
-                            let ampm = hours >= 12 ? 'PM' : 'AM';
-                            if (hours > 12) hours -= 12;
-                            if (hours === 0) hours = 12;
-                            if (hours < 0) { hours = 11; ampm = 'PM'; }
-                            newTime = `${hours}:${minutes} ${ampm}`;
-                        }
+                        newDate = `${parseInt(dateParts[1])}/${parseInt(dateParts[2])}/${dateParts[0]}`;
+                        let ampm = hours >= 12 ? 'PM' : 'AM';
+                        if (hours > 12) hours -= 12;
+                        if (hours === 0) hours = 12;
+                        if (hours < 0) { hours = 11; ampm = 'PM'; }
+                        newTime = `${hours}:${minutes} ${ampm}`;
                     }
                 }
 
